@@ -1,0 +1,29 @@
+﻿@model Nexora.Web.Models.LoginVm
+
+<h2>Login</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label>Email</label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label>Password</label>
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+
+    <div>
+        <label>
+            <input asp-for="RememberMe" />
+            Remember me
+        </label>
+    </div>
+
+    <button type="submit">Login</button>
+</form>

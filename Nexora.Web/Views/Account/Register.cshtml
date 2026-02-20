@@ -1,0 +1,34 @@
+﻿@model Nexora.Web.Models.RegisterVm
+
+<h2>Register</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label>Full name</label>
+        <input asp-for="FullName" />
+        <span asp-validation-for="FullName"></span>
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label>Password</label>
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+
+    <div>
+        <label>Organization name</label>
+        <input asp-for="OrganizationName" />
+        <span asp-validation-for="OrganizationName"></span>
+    </div>
+
+    <button type="submit">Create account</button>
+</form>
