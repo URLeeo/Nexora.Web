@@ -18,6 +18,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, AppUserClaimsPrincipalFactory>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();

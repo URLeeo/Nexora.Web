@@ -1,0 +1,32 @@
+﻿@model List<Nexora.Web.Data.Models.Category>
+
+<h2>Categories</h2>
+
+<p><a href="/Categories/Create">+ New Category</a></p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Name</td>
+                <td>@c.CreatedAtUtc.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a href="/Categories/Edit/@c.Id">Edit</a>
+
+                    <form method="post" action="/Categories/Delete/@c.Id" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

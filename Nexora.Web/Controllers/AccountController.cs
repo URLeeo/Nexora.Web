@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nexora.Web.Data;
 using Nexora.Web.Data.Models;
-using Nexora.Web.Models;
+using Nexora.Web.Models.IdentityModels;
 
 namespace Nexora.Web.Controllers;
 

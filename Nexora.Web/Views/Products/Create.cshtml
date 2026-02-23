@@ -1,0 +1,63 @@
+﻿@model Nexora.Web.Models.ProductModels.ProductCreateVm
+@{
+    var categories = ViewBag.Categories as List<Nexora.Web.Data.Models.Category> ?? new();
+}
+
+<h2>New Product</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label>Name</label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div>
+        <label>SKU</label>
+        <input asp-for="Sku" />
+    </div>
+
+    <div>
+        <label>Category</label>
+        <select asp-for="CategoryId">
+            <option value="">-- select --</option>
+            @foreach (var c in categories)
+            {
+                <option value="@c.Id">@c.Name</option>
+            }
+        </select>
+        <span asp-validation-for="CategoryId"></span>
+    </div>
+
+    <div>
+        <label>Sale price</label>
+        <input asp-for="SalePrice" />
+    </div>
+
+    <div>
+        <label>Cost price</label>
+        <input asp-for="CostPrice" />
+    </div>
+
+    <div>
+        <label>Stock</label>
+        <input asp-for="StockOnHand" />
+    </div>
+
+    <div>
+        <label>Low stock threshold</label>
+        <input asp-for="LowStockThreshold" />
+    </div>
+
+    <div>
+        <label>
+            <input asp-for="IsActive" />
+            Active
+        </label>
+    </div>
+
+    <button type="submit">Save</button>
+</form>

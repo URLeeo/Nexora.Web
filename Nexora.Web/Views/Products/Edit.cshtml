@@ -1,0 +1,64 @@
+﻿@model Nexora.Web.Models.ProductModels.ProductEditVm
+@{
+    var categories = ViewBag.Categories as List<Nexora.Web.Data.Models.Category> ?? new();
+}
+
+<h2>Edit Product</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <input type="hidden" asp-for="Id" />
+
+    <div>
+        <label>Name</label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div>
+        <label>SKU</label>
+        <input asp-for="Sku" />
+    </div>
+
+    <div>
+        <label>Category</label>
+        <select asp-for="CategoryId">
+            @foreach (var c in categories)
+            {
+                <option value="@c.Id" selected="@(c.Id == Model.CategoryId)">@c.Name</option>
+            }
+        </select>
+        <span asp-validation-for="CategoryId"></span>
+    </div>
+
+    <div>
+        <label>Sale price</label>
+        <input asp-for="SalePrice" />
+    </div>
+
+    <div>
+        <label>Cost price</label>
+        <input asp-for="CostPrice" />
+    </div>
+
+    <div>
+        <label>Stock</label>
+        <input asp-for="StockOnHand" />
+    </div>
+
+    <div>
+        <label>Low stock threshold</label>
+        <input asp-for="LowStockThreshold" />
+    </div>
+
+    <div>
+        <label>
+            <input asp-for="IsActive" />
+            Active
+        </label>
+    </div>
+
+    <button type="submit">Save</button>
+</form>

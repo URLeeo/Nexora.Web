@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Nexora.Web.Models;
+namespace Nexora.Web.Models.IdentityModels;
 
 public class LoginVm
 {

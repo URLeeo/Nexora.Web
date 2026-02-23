@@ -1,0 +1,13 @@
+﻿<h2>New Category</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label>Name</label>
+        <input name="name" />
+    </div>
+
+    <button type="submit">Save</button>
+</form>

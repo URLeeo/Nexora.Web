@@ -1,0 +1,15 @@
+﻿@model Nexora.Web.Data.Models.Category
+
+<h2>Edit Category</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label>Name</label>
+        <input name="name" value="@Model.Name" />
+    </div>
+
+    <button type="submit">Save</button>
+</form>
