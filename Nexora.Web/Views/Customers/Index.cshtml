@@ -1,0 +1,37 @@
+﻿@model List<Nexora.Web.Data.Models.Customer>
+
+<h2>Customers</h2>
+
+<form method="get" style="margin-bottom:12px;">
+    <input name="q" value="@ViewBag.Q" placeholder="Search name / phone / email" />
+    <button type="submit">Search</button>
+    <a href="/Customers/Create" style="margin-left:12px;">+ New Customer</a>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.FullName</td>
+                <td>@c.Phone</td>
+                <td>@c.Email</td>
+                <td>
+                    <a href="/Customers/Edit/@c.Id">Edit</a>
+                    <form method="post" action="/Customers/Delete/@c.Id" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

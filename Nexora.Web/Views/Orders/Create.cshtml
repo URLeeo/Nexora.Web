@@ -1,0 +1,72 @@
+﻿@model Nexora.Web.Models.OrderModels.OrderCreateVm
+@{
+    var customers = ViewBag.Customers as List<Nexora.Web.Data.Models.Customer> ?? new();
+    var products = ViewBag.Products as List<Nexora.Web.Data.Models.Product> ?? new();
+}
+
+<h2>New Order</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label>Customer (optional)</label>
+        <select asp-for="CustomerId">
+            <option value="">-- none --</option>
+            @foreach (var c in customers)
+            {
+                <option value="@c.Id">@c.FullName</option>
+            }
+        </select>
+    </div>
+
+    <hr />
+
+    <h4>Items</h4>
+
+    @for (int i = 0; i < Model.Items.Count; i++)
+    {
+        <div style="border:1px solid #ddd; padding:10px; margin-bottom:10px;">
+            <div>
+                <label>Product</label>
+                <select name="Items[@i].ProductId">
+                    <option value="">-- select --</option>
+                    @foreach (var p in products)
+                    {
+                        <option value="@p.Id">@p.Name (stock: @p.StockOnHand)</option>
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label>Qty</label>
+                <input name="Items[@i].Quantity" value="@(Model.Items[i].Quantity == 0 ? 1 : Model.Items[i].Quantity)" />
+            </div>
+
+            <div>
+                <label>Unit price</label>
+                <input name="Items[@i].UnitPrice" value="@(Model.Items[i].UnitPrice)" />
+            </div>
+        </div>
+    }
+
+    <p>
+        <!-- MVP: 1 item sətiri ilə başlayırıq. Sonra JS ilə "Add row" edərik -->
+        (MVP) For now, create order with the existing rows. We will add "Add item" button later.
+    </p>
+
+    <hr />
+
+    <div>
+        <label>Discount</label>
+        <input asp-for="DiscountAmount" />
+    </div>
+
+    <div>
+        <label>Tax</label>
+        <input asp-for="TaxAmount" />
+    </div>
+
+    <button type="submit">Create Order</button>
+</form>

@@ -1,0 +1,28 @@
+﻿@model List<Nexora.Web.Data.Models.Order>
+
+<h2>Orders</h2>
+<p><a href="/Orders/Create">+ New Order</a></p>
+
+<table>
+    <thead>
+        <tr>
+            <th>OrderNo</th>
+            <th>Customer</th>
+            <th>Total</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.OrderNo</td>
+                <td>@(o.Customer?.FullName ?? "-")</td>
+                <td>@o.Total</td>
+                <td>@o.CreatedAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+                <td><a href="/Orders/Details/@o.Id">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

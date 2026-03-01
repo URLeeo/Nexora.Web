@@ -1,0 +1,36 @@
+﻿@model Nexora.Web.Data.Models.Order
+
+<h2>Order @Model.OrderNo</h2>
+
+<p><b>Customer:</b> @(Model.Customer?.FullName ?? "-")</p>
+<p><b>Status:</b> @Model.Status</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Line</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model.Items)
+        {
+            <tr>
+                <td>@i.Product?.Name</td>
+                <td>@i.Quantity</td>
+                <td>@i.UnitPrice</td>
+                <td>@i.LineTotal</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+<p><b>Subtotal:</b> @Model.Subtotal</p>
+<p><b>Discount:</b> @Model.DiscountAmount</p>
+<p><b>Tax:</b> @Model.TaxAmount</p>
+<p><b>Total:</b> @Model.Total</p>
+
+<p><a href="/Orders">Back to orders</a></p>

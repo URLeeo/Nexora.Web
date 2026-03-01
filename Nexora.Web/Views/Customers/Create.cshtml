@@ -1,0 +1,30 @@
+﻿@model Nexora.Web.Data.Models.Customer
+
+<h2>New Customer</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All"></div>
+
+    <div>
+        <label>Full name</label>
+        <input asp-for="FullName" />
+    </div>
+
+    <div>
+        <label>Phone</label>
+        <input asp-for="Phone" />
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input asp-for="Email" />
+    </div>
+
+    <div>
+        <label>Notes</label>
+        <textarea asp-for="Notes"></textarea>
+    </div>
+
+    <button type="submit">Save</button>
+</form>

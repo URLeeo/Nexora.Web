@@ -1,6 +1,51 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
-}
+﻿@model Nexora.Web.Models.DashboardVm
 
 <h2>Dashboard</h2>
-<p>Welcome to Nexora.</p>
+
+<div style="display:flex; gap:12px; margin-bottom:16px;">
+    <div style="border:1px solid #ddd; padding:12px; width:220px;">
+        <div><b>Revenue (30d)</b></div>
+        <div style="font-size:22px;">@Model.RevenueLast30Days</div>
+    </div>
+
+    <div style="border:1px solid #ddd; padding:12px; width:220px;">
+        <div><b>Orders (30d)</b></div>
+        <div style="font-size:22px;">@Model.OrdersLast30Days</div>
+    </div>
+
+    <div style="border:1px solid #ddd; padding:12px; width:220px;">
+        <div><b>Customers</b></div>
+        <div style="font-size:22px;">@Model.CustomersCount</div>
+    </div>
+</div>
+
+<h3>Low stock products</h3>
+
+@if (Model.LowStockProducts.Count == 0)
+{
+    <p>All good 🎉</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Stock</th>
+                <th>Threshold</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.LowStockProducts)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.StockOnHand</td>
+                    <td>@p.Threshold</td>
+                    <td><a href="/Products/Edit/@p.Id">Open</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
