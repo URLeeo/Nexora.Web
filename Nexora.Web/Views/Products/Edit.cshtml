@@ -1,69 +1,102 @@
 ﻿@model Nexora.Web.Models.ProductModels.ProductEditVm
 @{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Edit Product";
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
     var categories = ViewBag.Categories as List<Nexora.Web.Data.Models.Category> ?? new();
 }
 
-@{
-    Layout = "_AppLayout";
-    ViewData["Title"] = "Products";
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <div class="fs-4 fw-semibold">Edit Product</div>
+        <div class="text-medium-emphasis">Update product details</div>
+    </div>
+
+    <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-arrow-left")" xlink:href="@($"{coreuiIcons}#cil-arrow-left")"></use>
+        </svg>
+        Back
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header fw-semibold">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-pencil")" xlink:href="@($"{coreuiIcons}#cil-pencil")"></use>
+        </svg>
+        Edit Product
+    </div>
+
+    <div class="card-body">
+        <form method="post" asp-controller="Products" asp-action="Edit">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Name</label>
+                    <input class="form-control" asp-for="Name" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">SKU</label>
+                    <input class="form-control" asp-for="Sku" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" asp-for="CategoryId">
+                        @foreach (var c in categories)
+                        {
+                            <option value="@c.Id" selected="@(c.Id == Model.CategoryId)">@c.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Sale price</label>
+                    <input class="form-control" asp-for="SalePrice" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Cost price</label>
+                    <input class="form-control" asp-for="CostPrice" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Stock on hand</label>
+                    <input class="form-control" asp-for="StockOnHand" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Low stock threshold</label>
+                    <input class="form-control" asp-for="LowStockThreshold" />
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="IsActive" />
+                        <label class="form-check-label" for="IsActive">Active</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <svg class="icon me-2">
+                        <use href="@($"{coreuiIcons}#cil-save")" xlink:href="@($"{coreuiIcons}#cil-save")"></use>
+                    </svg>
+                    Save
+                </button>
+                <a class="btn btn-light" asp-controller="Products" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
-
-<h2>Edit Product</h2>
-
-<form method="post">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="All"></div>
-
-    <input type="hidden" asp-for="Id" />
-
-    <div>
-        <label>Name</label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
-    </div>
-
-    <div>
-        <label>SKU</label>
-        <input asp-for="Sku" />
-    </div>
-
-    <div>
-        <label>Category</label>
-        <select asp-for="CategoryId">
-            @foreach (var c in categories)
-            {
-                <option value="@c.Id" selected="@(c.Id == Model.CategoryId)">@c.Name</option>
-            }
-        </select>
-        <span asp-validation-for="CategoryId"></span>
-    </div>
-
-    <div>
-        <label>Sale price</label>
-        <input asp-for="SalePrice" />
-    </div>
-
-    <div>
-        <label>Cost price</label>
-        <input asp-for="CostPrice" />
-    </div>
-
-    <div>
-        <label>Stock</label>
-        <input asp-for="StockOnHand" />
-    </div>
-
-    <div>
-        <label>Low stock threshold</label>
-        <input asp-for="LowStockThreshold" />
-    </div>
-
-    <div>
-        <label>
-            <input asp-for="IsActive" />
-            Active
-        </label>
-    </div>
-
-    <button type="submit">Save</button>
-</form>

@@ -2,6 +2,7 @@
 @{
     Layout = "_AppLayout";
     ViewData["Title"] = "Categories";
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
 }
 
 <div class="body flex-grow-1 px-3">
@@ -16,7 +17,7 @@
             <div class="d-flex gap-2">
                 <a class="btn btn-primary" asp-controller="Categories" asp-action="Create">
                     <svg class="icon me-2">
-                        <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-plus"></use>
+                        <use href="@($"{coreuiIcons}#cil-plus")" xlink:href="@($"{coreuiIcons}#cil-plus")"></use>
                     </svg>
                     New Category
                 </a>
@@ -27,7 +28,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
                 <div class="fw-semibold">
                     <svg class="icon me-2">
-                        <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-list"></use>
+                        <use href="@($"{coreuiIcons}#cil-list")" xlink:href="@($"{coreuiIcons}#cil-list")"></use>
                     </svg>
                     Category List
                     <span class="badge bg-info ms-2">@Model.Count</span>
@@ -36,7 +37,7 @@
                 <div class="input-group" style="max-width: 320px;">
                     <span class="input-group-text">
                         <svg class="icon">
-                            <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-search"></use>
+                            <use href="@($"{coreuiIcons}#cil-search")" xlink:href="@($"{coreuiIcons}#cil-search")"></use>
                         </svg>
                     </span>
                     <input id="catSearch" class="form-control" placeholder="Search by name..." />
@@ -89,7 +90,7 @@
                                                    asp-action="Edit"
                                                    asp-route-id="@c.Id">
                                                     <svg class="icon me-1">
-                                                        <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-pencil"></use>
+                                                        <use href="@($"{coreuiIcons}#cil-pencil")" xlink:href="@($"{coreuiIcons}#cil-pencil")"></use>
                                                     </svg>
                                                     Edit
                                                 </a>
@@ -103,7 +104,7 @@
                                                     @Html.AntiForgeryToken()
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                                         <svg class="icon me-1">
-                                                            <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-trash"></use>
+                                                            <use href="@($"{coreuiIcons}#cil-trash")" xlink:href="@($"{coreuiIcons}#cil-trash")"></use>
                                                         </svg>
                                                         Delete
                                                     </button>

@@ -2,34 +2,67 @@
 
 @{
     Layout = "_AppLayout";
-    ViewData["Title"] = "Customers";
+    ViewData["Title"] = "Create Customer";
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
 }
 
-<h2>New Customer</h2>
-
-<form method="post">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="All"></div>
-
+<div class="d-flex align-items-center justify-content-between mb-3">
     <div>
-        <label>Full name</label>
-        <input asp-for="FullName" />
+        <div class="fs-4 fw-semibold">Create Customer</div>
+        <div class="text-medium-emphasis">Add a new customer</div>
     </div>
 
-    <div>
-        <label>Phone</label>
-        <input asp-for="Phone" />
+    <a class="btn btn-outline-secondary" asp-controller="Customers" asp-action="Index">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-arrow-left")" xlink:href="@($"{coreuiIcons}#cil-arrow-left")"></use>
+        </svg>
+        Back
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header fw-semibold">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-plus")" xlink:href="@($"{coreuiIcons}#cil-plus")"></use>
+        </svg>
+        New Customer
     </div>
 
-    <div>
-        <label>Email</label>
-        <input asp-for="Email" />
-    </div>
+    <div class="card-body">
+        <form method="post" asp-controller="Customers" asp-action="Create">
+            @Html.AntiForgeryToken()
 
-    <div>
-        <label>Notes</label>
-        <textarea asp-for="Notes"></textarea>
-    </div>
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-    <button type="submit">Save</button>
-</form>
+            <div class="mb-3">
+                <label class="form-label">Full name</label>
+                <input class="form-control" asp-for="FullName" placeholder="e.g. John Doe" autocomplete="off" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input class="form-control" asp-for="Phone" placeholder="+994..." autocomplete="off" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control" asp-for="Email" placeholder="example@mail.com" autocomplete="off" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea class="form-control" asp-for="Notes" rows="3" placeholder="Optional notes..."></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <svg class="icon me-2">
+                        <use href="@($"{coreuiIcons}#cil-save")" xlink:href="@($"{coreuiIcons}#cil-save")"></use>
+                    </svg>
+                    Create
+                </button>
+                <a class="btn btn-light" asp-controller="Customers" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

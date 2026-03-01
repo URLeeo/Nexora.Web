@@ -1,4 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@{
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +18,6 @@
 
     @RenderSection("Styles", required: false)
 </head>
-
 <body>
     <!-- Sidebar -->
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
@@ -29,7 +31,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="/Dashboard">
                     <span class="nav-icon">
-                        <svg class="icon"><use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-speedometer"></use></svg>
+                        <svg class="icon">
+                            <use href="@($"{coreuiIcons}#cil-speedometer")"
+                                 xlink:href="@($"{coreuiIcons}#cil-speedometer")"></use>
+                        </svg>
                     </span>
                     Dashboard
                 </a>
@@ -40,7 +45,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="/Products">
                     <span class="nav-icon">
-                        <svg class="icon"><use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-list"></use></svg>
+                        <svg class="icon">
+                            <use href="@($"{coreuiIcons}#cil-list")"
+                                 xlink:href="@($"{coreuiIcons}#cil-list")"></use>
+                        </svg>
                     </span>
                     Products
                 </a>
@@ -49,7 +57,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="/Categories">
                     <span class="nav-icon">
-                        <svg class="icon"><use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-tags"></use></svg>
+                        <svg class="icon">
+                            <use href="@($"{coreuiIcons}#cil-tags")"
+                                 xlink:href="@($"{coreuiIcons}#cil-tags")"></use>
+                        </svg>
                     </span>
                     Categories
                 </a>
@@ -58,7 +69,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="/Customers">
                     <span class="nav-icon">
-                        <svg class="icon"><use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-user"></use></svg>
+                        <svg class="icon">
+                            <use href="@($"{coreuiIcons}#cil-user")"
+                                 xlink:href="@($"{coreuiIcons}#cil-user")"></use>
+                        </svg>
                     </span>
                     Customers
                 </a>
@@ -67,15 +81,22 @@
             <li class="nav-item">
                 <a class="nav-link" href="/Orders">
                     <span class="nav-icon">
-                        <svg class="icon"><use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-cart"></use></svg>
+                        <svg class="icon">
+                            <use href="@($"{coreuiIcons}#cil-cart")"
+                                 xlink:href="@($"{coreuiIcons}#cil-cart")"></use>
+                        </svg>
                     </span>
                     Orders
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="/Home">
                     <span class="nav-icon">
-                        <svg class="icon"><use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-cart"></use></svg>
+                        <svg class="icon">
+                            <use href="@($"{coreuiIcons}#cil-home")"
+                                 xlink:href="@($"{coreuiIcons}#cil-home")"></use>
+                        </svg>
                     </span>
                     Back To Home
                 </a>
@@ -91,9 +112,11 @@
         <header class="header header-sticky mb-4">
             <div class="container-fluid">
 
-                <button class="header-toggler px-md-0 me-md-3" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
+                <button class="header-toggler px-md-0 me-md-3" type="button"
+                        onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
                     <svg class="icon icon-lg">
-                        <use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-menu"></use>
+                        <use href="@($"{coreuiIcons}#cil-menu")"
+                             xlink:href="@($"{coreuiIcons}#cil-menu")"></use>
                     </svg>
                 </button>
 
@@ -101,7 +124,8 @@
                     <li class="nav-item me-2">
                         <a class="nav-link" href="/" title="Back to landing">
                             <svg class="icon">
-                                <use xlink:href="~/admin/vendors/@@coreui/icons/svg/free.svg#cil-home"></use>
+                                <use href="@($"{coreuiIcons}#cil-home")"
+                                     xlink:href="@($"{coreuiIcons}#cil-home")"></use>
                             </svg>
                         </a>
                     </li>

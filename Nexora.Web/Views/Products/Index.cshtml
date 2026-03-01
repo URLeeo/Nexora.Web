@@ -3,47 +3,129 @@
 @{
     Layout = "_AppLayout";
     ViewData["Title"] = "Products";
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
 }
 
-<h2>Products</h2>
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <div class="fs-4 fw-semibold">Products</div>
+        <div class="text-medium-emphasis">Manage your products and stock</div>
+    </div>
 
-<form method="get" style="margin-bottom:12px;">
-    <input name="q" value="@ViewBag.Q" placeholder="Search name / sku" />
-    <button type="submit">Search</button>
-    <a href="/Products/Create" style="margin-left:12px;">+ New Product</a>
-</form>
+    <a class="btn btn-primary" asp-controller="Products" asp-action="Create">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-plus")" xlink:href="@($"{coreuiIcons}#cil-plus")"></use>
+        </svg>
+        New Product
+    </a>
+</div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>SKU</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Active</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var p in Model)
+<div class="card mb-4">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <div class="fw-semibold">
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-list")" xlink:href="@($"{coreuiIcons}#cil-list")"></use>
+            </svg>
+            Product List
+            <span class="badge bg-info ms-2">@Model.Count</span>
+        </div>
+
+        <form method="get" class="d-flex" style="gap:8px; max-width:420px; width:100%;">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <svg class="icon">
+                        <use href="@($"{coreuiIcons}#cil-search")" xlink:href="@($"{coreuiIcons}#cil-search")"></use>
+                    </svg>
+                </span>
+                <input class="form-control"
+                       name="q"
+                       value="@ViewBag.Q"
+                       placeholder="Search name / sku" />
+            </div>
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+            <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">Reset</a>
+        </form>
+    </div>
+
+    <div class="card-body">
+        @if (Model.Count == 0)
         {
-            <tr>
-                <td>@p.Name</td>
-                <td>@p.Sku</td>
-                <td>@p.Category?.Name</td>
-                <td>@p.SalePrice</td>
-                <td>@p.StockOnHand</td>
-                <td>@p.IsActive</td>
-                <td>
-                    <a href="/Products/Edit/@p.Id">Edit</a>
-
-                    <form method="post" action="/Products/Delete/@p.Id" style="display:inline;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>
+            <div class="text-center py-5">
+                <div class="text-medium-emphasis mb-2">No products found.</div>
+                <a class="btn btn-primary" asp-controller="Products" asp-action="Create">Create your first product</a>
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th class="text-nowrap">SKU</th>
+                            <th>Category</th>
+                            <th class="text-nowrap">Sale price</th>
+                            <th class="text-nowrap">Stock</th>
+                            <th class="text-nowrap">Active</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model)
+                        {
+                            var low = p.StockOnHand <= p.LowStockThreshold;
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@p.Name</div>
+                                    <div class="small text-medium-emphasis">ID: @p.Id</div>
+                                </td>
+                                <td class="text-nowrap">@(!string.IsNullOrWhiteSpace(p.Sku) ? p.Sku : "-")</td>
+                                <td>@(p.Category?.Name ?? "-")</td>
+                                <td class="text-nowrap">@p.SalePrice</td>
+                                <td class="text-nowrap">
+                                    <span class="badge @(low ? "bg-warning" : "bg-success")">
+                                        @p.StockOnHand
+                                    </span>
+                                    <span class="text-medium-emphasis ms-2 small">thr: @p.LowStockThreshold</span>
+                                </td>
+                                <td class="text-nowrap">
+                                    <span class="badge @(p.IsActive ? "bg-success" : "bg-secondary")">
+                                        @(p.IsActive ? "Yes" : "No")
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           asp-controller="Products"
+                                           asp-action="Edit"
+                                           asp-route-id="@p.Id">
+                                            <svg class="icon me-1">
+                                                <use href="@($"{coreuiIcons}#cil-pencil")" xlink:href="@($"{coreuiIcons}#cil-pencil")"></use>
+                                            </svg>
+                                            Edit
+                                        </a>
+
+                                        <form class="d-inline"
+                                              asp-controller="Products"
+                                              asp-action="Delete"
+                                              asp-route-id="@p.Id"
+                                              method="post"
+                                              onsubmit="return confirm('Delete product: @p.Name ?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <svg class="icon me-1">
+                                                    <use href="@($"{coreuiIcons}#cil-trash")" xlink:href="@($"{coreuiIcons}#cil-trash")"></use>
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

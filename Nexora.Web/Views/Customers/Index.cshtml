@@ -3,40 +3,119 @@
 @{
     Layout = "_AppLayout";
     ViewData["Title"] = "Customers";
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
 }
 
-<h2>Customers</h2>
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <div class="fs-4 fw-semibold">Customers</div>
+        <div class="text-medium-emphasis">Manage your customers</div>
+    </div>
 
-<form method="get" style="margin-bottom:12px;">
-    <input name="q" value="@ViewBag.Q" placeholder="Search name / phone / email" />
-    <button type="submit">Search</button>
-    <a href="/Customers/Create" style="margin-left:12px;">+ New Customer</a>
-</form>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary" asp-controller="Customers" asp-action="Create">
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-plus")" xlink:href="@($"{coreuiIcons}#cil-plus")"></use>
+            </svg>
+            New Customer
+        </a>
+    </div>
+</div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var c in Model)
+<div class="card mb-4">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <div class="fw-semibold">
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-user")" xlink:href="@($"{coreuiIcons}#cil-user")"></use>
+            </svg>
+            Customer List
+            <span class="badge bg-info ms-2">@Model.Count</span>
+        </div>
+
+        <form method="get" class="d-flex" style="gap:8px; max-width:420px; width:100%;">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <svg class="icon">
+                        <use href="@($"{coreuiIcons}#cil-search")" xlink:href="@($"{coreuiIcons}#cil-search")"></use>
+                    </svg>
+                </span>
+                <input class="form-control"
+                       name="q"
+                       value="@ViewBag.Q"
+                       placeholder="Search name / phone / email" />
+            </div>
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+            <a class="btn btn-outline-secondary" asp-controller="Customers" asp-action="Index">Reset</a>
+        </form>
+    </div>
+
+    <div class="card-body">
+        @if (Model.Count == 0)
         {
-            <tr>
-                <td>@c.FullName</td>
-                <td>@c.Phone</td>
-                <td>@c.Email</td>
-                <td>
-                    <a href="/Customers/Edit/@c.Id">Edit</a>
-                    <form method="post" action="/Customers/Delete/@c.Id" style="display:inline;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>
+            <div class="text-center py-5">
+                <div class="text-medium-emphasis mb-2">No customers found.</div>
+                <a class="btn btn-primary" asp-controller="Customers" asp-action="Create">
+                    Create your first customer
+                </a>
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Customer</th>
+                            <th class="text-nowrap">Phone</th>
+                            <th>Email</th>
+                            <th class="text-nowrap">Created</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@c.FullName</div>
+                                    <div class="small text-medium-emphasis">ID: @c.Id</div>
+                                </td>
+                                <td class="text-nowrap">@(!string.IsNullOrWhiteSpace(c.Phone) ? c.Phone : "-")</td>
+                                <td>@(!string.IsNullOrWhiteSpace(c.Email) ? c.Email : "-")</td>
+                                <td class="text-nowrap">@c.CreatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                                <td class="text-end">
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           asp-controller="Customers"
+                                           asp-action="Edit"
+                                           asp-route-id="@c.Id">
+                                            <svg class="icon me-1">
+                                                <use href="@($"{coreuiIcons}#cil-pencil")" xlink:href="@($"{coreuiIcons}#cil-pencil")"></use>
+                                            </svg>
+                                            Edit
+                                        </a>
+
+                                        <form class="d-inline"
+                                              asp-controller="Customers"
+                                              asp-action="Delete"
+                                              asp-route-id="@c.Id"
+                                              method="post"
+                                              onsubmit="return confirm('Delete customer: @c.FullName ?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <svg class="icon me-1">
+                                                    <use href="@($"{coreuiIcons}#cil-trash")" xlink:href="@($"{coreuiIcons}#cil-trash")"></use>
+                                                </svg>
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

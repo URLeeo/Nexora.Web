@@ -2,6 +2,7 @@
 @{
     Layout = "_AppLayout";
     ViewData["Title"] = "Edit Category";
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
 }
 
 <div class="body flex-grow-1 px-3">
@@ -15,7 +16,7 @@
 
             <a class="btn btn-outline-secondary" asp-controller="Categories" asp-action="Index">
                 <svg class="icon me-2">
-                    <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-arrow-left"></use>
+                    <use href="@($"{coreuiIcons}#cil-arrow-left")" xlink:href="@($"{coreuiIcons}#cil-arrow-left")"></use>
                 </svg>
                 Back
             </a>
@@ -24,7 +25,7 @@
         <div class="card mb-4">
             <div class="card-header fw-semibold">
                 <svg class="icon me-2">
-                    <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-pencil"></use>
+                    <use href="@($"{coreuiIcons}#cil-pencil")" xlink:href="@($"{coreuiIcons}#cil-pencil")"></use>
                 </svg>
                 Edit Category
             </div>
@@ -46,7 +47,7 @@
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
                             <svg class="icon me-2">
-                                <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-save"></use>
+                                <use href="@($"{coreuiIcons}#cil-save")" xlink:href="@($"{coreuiIcons}#cil-save")"></use>
                             </svg>
                             Save
                         </button>
