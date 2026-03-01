@@ -1,0 +1,36 @@
+﻿@{
+    Layout = null;
+    var title = ViewData["Title"] as string ?? "Nexora";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@title</title>
+
+    <!--====== Favicon Icon ======-->
+    <link rel="shortcut icon" href="~/play/assets/images/favicon.svg" type="image/svg" />
+
+    <!-- ===== All CSS files ===== -->
+    <link rel="stylesheet" href="~/play/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/play/assets/css/animate.css" />
+    <link rel="stylesheet" href="~/play/assets/css/lineicons.css" />
+    <link rel="stylesheet" href="~/play/assets/css/ud-styles.css" />
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+    @RenderBody()
+
+    <!-- ====== All Javascript Files ====== -->
+    <script src="~/play/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/play/assets/js/wow.min.js"></script>
+    <script src="~/play/assets/js/main.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

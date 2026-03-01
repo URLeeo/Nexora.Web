@@ -3,6 +3,11 @@
     var categories = ViewBag.Categories as List<Nexora.Web.Data.Models.Category> ?? new();
 }
 
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Products";
+}
+
 <h2>Edit Product</h2>
 
 <form method="post">

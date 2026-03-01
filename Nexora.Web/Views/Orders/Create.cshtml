@@ -4,6 +4,11 @@
     var products = ViewBag.Products as List<Nexora.Web.Data.Models.Product> ?? new();
 }
 
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Orders";
+}
+
 <h2>New Order</h2>
 
 <form method="post">

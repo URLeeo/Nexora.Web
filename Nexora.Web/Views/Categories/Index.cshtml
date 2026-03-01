@@ -1,32 +1,144 @@
 ﻿@model List<Nexora.Web.Data.Models.Category>
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Categories";
+}
 
-<h2>Categories</h2>
+<div class="body flex-grow-1 px-3">
+    <div class="container-lg">
 
-<p><a href="/Categories/Create">+ New Category</a></p>
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <div class="fs-4 fw-semibold">Categories</div>
+                <div class="text-medium-emphasis">Manage your categories</div>
+            </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Created</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var c in Model)
-        {
-            <tr>
-                <td>@c.Name</td>
-                <td>@c.CreatedAtUtc.ToString("yyyy-MM-dd")</td>
-                <td>
-                    <a href="/Categories/Edit/@c.Id">Edit</a>
+            <div class="d-flex gap-2">
+                <a class="btn btn-primary" asp-controller="Categories" asp-action="Create">
+                    <svg class="icon me-2">
+                        <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-plus"></use>
+                    </svg>
+                    New Category
+                </a>
+            </div>
+        </div>
 
-                    <form method="post" action="/Categories/Delete/@c.Id" style="display:inline;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="fw-semibold">
+                    <svg class="icon me-2">
+                        <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-list"></use>
+                    </svg>
+                    Category List
+                    <span class="badge bg-info ms-2">@Model.Count</span>
+                </div>
+
+                <div class="input-group" style="max-width: 320px;">
+                    <span class="input-group-text">
+                        <svg class="icon">
+                            <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-search"></use>
+                        </svg>
+                    </span>
+                    <input id="catSearch" class="form-control" placeholder="Search by name..." />
+                </div>
+            </div>
+
+            <div class="card-body">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <div asp-validation-summary="All"></div>
+                    </div>
+                }
+
+                @if (Model.Count == 0)
+                {
+                    <div class="text-center py-5">
+                        <div class="text-medium-emphasis mb-2">No categories found.</div>
+                        <a class="btn btn-primary" asp-controller="Categories" asp-action="Create">
+                            Create your first category
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="catTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="text-nowrap">Created</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var c in Model)
+                                {
+                                    <tr>
+                                        <td class="cat-name">
+                                            <div class="fw-semibold">@c.Name</div>
+                                            <div class="small text-medium-emphasis">ID: @c.Id</div>
+                                        </td>
+                                        <td class="text-nowrap">
+                                            @c.CreatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="btn-group" role="group">
+                                                <a class="btn btn-sm btn-outline-primary"
+                                                   asp-controller="Categories"
+                                                   asp-action="Edit"
+                                                   asp-route-id="@c.Id">
+                                                    <svg class="icon me-1">
+                                                        <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-pencil"></use>
+                                                    </svg>
+                                                    Edit
+                                                </a>
+
+                                                <form class="d-inline"
+                                                      asp-controller="Categories"
+                                                      asp-action="Delete"
+                                                      asp-route-id="@c.Id"
+                                                      method="post"
+                                                      onsubmit="return confirm('Delete category: @c.Name ?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <svg class="icon me-1">
+                                                            <use xlink:href="~/admin/assets/assets/vendors/coreui/icons/svg/free.svg#cil-trash"></use>
+                                                        </svg>
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const input = document.getElementById('catSearch');
+            const table = document.getElementById('catTable');
+            if (!input || !table) return;
+
+            input.addEventListener('input', function () {
+                const q = (input.value || '').toLowerCase().trim();
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(r => {
+                    const nameCell = r.querySelector('.cat-name');
+                    const text = (nameCell ? nameCell.innerText : r.innerText).toLowerCase();
+                    r.style.display = text.includes(q) ? '' : 'none';
+                });
+            });
+        })();
+    </script>
+}

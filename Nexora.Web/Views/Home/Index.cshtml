@@ -1,8 +1,364 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "Nexora | Inventory & Sales SaaS";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- ====== Header Start ====== -->
+@await Html.PartialAsync("_LandingNavbar")
+<!-- ====== Header End ====== -->
+<!-- ====== Hero Start ====== -->
+<section class="ud-hero" id="home">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ud-hero-content wow fadeInUp" data-wow-delay=".2s">
+                    <h1 class="ud-hero-title">
+                        Nexora — Inventory, Orders & Sales Tracking for Small Businesses
+                    </h1>
+                    <p class="ud-hero-desc">
+                        Manage products, customers and orders. Auto-update stock, track low inventory and get a simple dashboard.
+                    </p>
+                    <ul class="ud-hero-buttons">
+                        <li>
+                            <a href="/Account/Register" class="ud-main-btn ud-white-btn">
+                                Get Started
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#features" class="ud-main-btn ud-link-btn ud-menu-scroll">
+                                Learn More <i class="lni lni-arrow-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="ud-hero-brands-wrapper wow fadeInUp" data-wow-delay=".3s">
+                    <img src="~/play/assets/images/hero/brand.svg" alt="brand" />
+                </div>
+
+                <div class="ud-hero-image wow fadeInUp" data-wow-delay=".25s">
+                    <img src="~/play/assets/images/hero/hero-image.svg" alt="hero-image" />
+                    <img src="~/play/assets/images/hero/dotted-shape.svg" alt="shape" class="shape shape-1" />
+                    <img src="~/play/assets/images/hero/dotted-shape.svg" alt="shape" class="shape shape-2" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ====== Hero End ====== -->
+<!-- ====== Features Start ====== -->
+<section id="features" class="ud-features">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ud-section-title">
+                    <span>Features</span>
+                    <h2>Everything you need for day-to-day operations</h2>
+                    <p>
+                        Simple inventory, customer and order management with automatic stock updates.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-sm-6">
+                <div class="ud-single-feature wow fadeInUp" data-wow-delay=".1s">
+                    <div class="ud-feature-icon"><i class="lni lni-layers"></i></div>
+                    <div class="ud-feature-content">
+                        <h3 class="ud-feature-title">Products & Stock</h3>
+                        <p class="ud-feature-desc">Create products, set stock levels and low-stock alerts.</p>
+                        <a href="/Account/Register" class="ud-feature-link">Try it</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-sm-6">
+                <div class="ud-single-feature wow fadeInUp" data-wow-delay=".15s">
+                    <div class="ud-feature-icon"><i class="lni lni-users"></i></div>
+                    <div class="ud-feature-content">
+                        <h3 class="ud-feature-title">Customers</h3>
+                        <p class="ud-feature-desc">Manage customers and keep contact details.</p>
+                        <a href="/Account/Register" class="ud-feature-link">Try it</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-sm-6">
+                <div class="ud-single-feature wow fadeInUp" data-wow-delay=".2s">
+                    <div class="ud-feature-icon"><i class="lni lni-cart-full"></i></div>
+                    <div class="ud-feature-content">
+                        <h3 class="ud-feature-title">Orders</h3>
+                        <p class="ud-feature-desc">Create orders and automatically decrease stock.</p>
+                        <a href="/Account/Register" class="ud-feature-link">Try it</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-sm-6">
+                <div class="ud-single-feature wow fadeInUp" data-wow-delay=".25s">
+                    <div class="ud-feature-icon"><i class="lni lni-stats-up"></i></div>
+                    <div class="ud-feature-content">
+                        <h3 class="ud-feature-title">Dashboard</h3>
+                        <p class="ud-feature-desc">Revenue and low-stock overview in one place.</p>
+                        <a href="/Account/Login" class="ud-feature-link">Open dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ====== Features End ====== -->
+<!-- ====== About Start ====== -->
+<section id="about" class="ud-about">
+    <div class="container">
+        <div class="ud-about-wrapper wow fadeInUp" data-wow-delay=".2s">
+            <div class="ud-about-content-wrapper">
+                <div class="ud-about-content">
+                    <span class="tag">About</span>
+                    <h2>Built for small teams who want clarity.</h2>
+                    <p>
+                        Nexora helps you keep product stock accurate, track orders, and spot low inventory before it becomes a problem.
+                    </p>
+                    <p>
+                        Perfect for small shops, online sellers, and service businesses that sell physical items.
+                    </p>
+                    <a href="/Account/Register" class="ud-main-btn">Get Started</a>
+                </div>
+            </div>
+            <div class="ud-about-image">
+                <img src="~/play/assets/images/about/about-image.svg" alt="about-image" />
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ====== About End ====== -->
+<!-- ====== Pricing Start ====== -->
+<section id="pricing" class="ud-pricing">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ud-section-title mx-auto text-center">
+                    <span>Pricing</span>
+                    <h2>Simple plans</h2>
+                    <p>Start free, upgrade later. (Demo pricing)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-0 align-items-center justify-content-center">
+            <div class="col-lg-4 col-md-6 col-sm-10">
+                <div class="ud-single-pricing first-item wow fadeInUp" data-wow-delay=".15s">
+                    <div class="ud-pricing-header">
+                        <h3>STARTER</h3>
+                        <h4>$ 0/mo</h4>
+                    </div>
+                    <div class="ud-pricing-body">
+                        <ul>
+                            <li>Products & Categories</li>
+                            <li>Customers</li>
+                            <li>Orders</li>
+                            <li>Dashboard</li>
+                        </ul>
+                    </div>
+                    <div class="ud-pricing-footer">
+                        <a href="/Account/Register" class="ud-main-btn ud-border-btn">Start Free</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-10">
+                <div class="ud-single-pricing active wow fadeInUp" data-wow-delay=".1s">
+                    <span class="ud-popular-tag">POPULAR</span>
+                    <div class="ud-pricing-header">
+                        <h3>PRO</h3>
+                        <h4>$ 19/mo</h4>
+                    </div>
+                    <div class="ud-pricing-body">
+                        <ul>
+                            <li>Everything in Starter</li>
+                            <li>Profit reports (soon)</li>
+                            <li>Exports (soon)</li>
+                            <li>Multi-user (soon)</li>
+                        </ul>
+                    </div>
+                    <div class="ud-pricing-footer">
+                        <a href="/Account/Register" class="ud-main-btn ud-white-btn">Upgrade</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-10">
+                <div class="ud-single-pricing last-item wow fadeInUp" data-wow-delay=".15s">
+                    <div class="ud-pricing-header">
+                        <h3>BUSINESS</h3>
+                        <h4>$ 49/mo</h4>
+                    </div>
+                    <div class="ud-pricing-body">
+                        <ul>
+                            <li>Everything in Pro</li>
+                            <li>Advanced analytics (soon)</li>
+                            <li>Integrations (soon)</li>
+                            <li>Priority support</li>
+                        </ul>
+                    </div>
+                    <div class="ud-pricing-footer">
+                        <a href="/Account/Register" class="ud-main-btn ud-border-btn">Contact Sales</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ====== Pricing End ====== -->
+<!-- ====== Contact Start ====== -->
+<section id="contact" class="ud-contact">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-xl-8 col-lg-7">
+                <div class="ud-contact-content-wrapper">
+                    <div class="ud-contact-title">
+                        <span>CONTACT US</span>
+                        <h2>Let’s talk about your business</h2>
+                    </div>
+                    <div class="ud-contact-info-wrapper">
+                        <div class="ud-single-info">
+                            <div class="ud-info-icon"><i class="lni lni-envelope"></i></div>
+                            <div class="ud-info-meta">
+                                <h5>Email</h5>
+                                <p>support@nexora.app</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-5">
+                <div class="ud-contact-form-wrapper wow fadeInUp" data-wow-delay=".2s">
+                    <h3 class="ud-contact-form-title">Request a Demo</h3>
+                    <form class="ud-contact-form">
+                        <div class="ud-form-group">
+                            <label>Full Name*</label>
+                            <input type="text" placeholder="Your name" />
+                        </div>
+                        <div class="ud-form-group">
+                            <label>Email*</label>
+                            <input type="email" placeholder="example@mail.com" />
+                        </div>
+                        <div class="ud-form-group mb-0">
+                            <button type="button" class="ud-main-btn">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- ====== Contact End ====== -->
+<!-- ====== Footer Start ====== -->
+<footer class="ud-footer wow fadeInUp" data-wow-delay=".15s">
+    <div class="shape shape-1">
+        <img src="~/play/assets/images/footer/shape-1.svg" alt="shape" />
+    </div>
+    <div class="shape shape-2">
+        <img src="~/play/assets/images/footer/shape-2.svg" alt="shape" />
+    </div>
+    <div class="shape shape-3">
+        <img src="~/play/assets/images/footer/shape-3.svg" alt="shape" />
+    </div>
+
+    <div class="ud-footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul class="ud-footer-bottom-left">
+                        <li><a href="javascript:void(0)">Privacy policy</a></li>
+                        <li><a href="javascript:void(0)">Terms</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <p class="ud-footer-bottom-right">
+                        Nexora © @DateTime.UtcNow.Year
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- ====== Footer End ====== -->
+<!-- ====== Back To Top Start ====== -->
+<a href="javascript:void(0)" class="back-to-top">
+    <i class="lni lni-chevron-up"></i>
+</a>
+<!-- ====== Back To Top End ====== -->
+@section Scripts {
+    <script>
+        // ==== smooth scroll + works with both "#id" and "/#id"
+        const pageLink = document.querySelectorAll(".ud-menu-scroll");
+
+        pageLink.forEach((elem) => {
+            elem.addEventListener("click", (e) => {
+                const rawHref = elem.getAttribute("href");
+                if (!rawHref) return;
+
+                // normalize: "/#home" -> "#home"
+                const hashIndex = rawHref.indexOf("#");
+                const hash = hashIndex >= 0 ? rawHref.substring(hashIndex) : null;
+
+                // if it has no hash, let normal navigation happen
+                if (!hash) return;
+
+                // If we're NOT on landing page, go to landing with hash
+                if (window.location.pathname !== "/") {
+                    // allow normal navigation
+                    return;
+                }
+
+                // we're on landing page => prevent default and smooth scroll
+                e.preventDefault();
+
+                const target = document.querySelector(hash);
+                if (!target) return;
+
+                const headerOffset = 73; // your navbar height
+                const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            });
+        });
+
+        // section menu active
+        function onScroll() {
+            const links = document.querySelectorAll(".ud-menu-scroll");
+            const scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+            const headerOffset = 73;
+
+            links.forEach((link) => {
+                const rawHref = link.getAttribute("href");
+                if (!rawHref) return;
+
+                const hashIndex = rawHref.indexOf("#");
+                if (hashIndex < 0) return;
+
+                const hash = rawHref.substring(hashIndex);
+                const section = document.querySelector(hash);
+                if (!section) return;
+
+                const top = section.offsetTop - headerOffset;
+                const bottom = top + section.offsetHeight;
+
+                if (scrollPos >= top && scrollPos < bottom) {
+                    links.forEach(l => l.classList.remove("active"));
+                    link.classList.add("active");
+                }
+            });
+        }
+
+        window.addEventListener("scroll", onScroll);
+    </script>
+}

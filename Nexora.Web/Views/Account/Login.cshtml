@@ -1,29 +1,70 @@
 ﻿@model Nexora.Web.Models.IdentityModels.LoginVm
+@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "Login";
+}
 
-<h2>Login</h2>
-
-<form method="post">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="All"></div>
-
-    <div>
-        <label>Email</label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+<!-- ====== Header Start ====== -->
+@await Html.PartialAsync("_LandingNavbar")
+<!-- ====== Header End ====== -->
+<!-- ====== Banner Start ====== -->
+<section class="ud-page-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ud-banner-content">
+                    <h1>Login</h1>
+                </div>
+            </div>
+        </div>
     </div>
+</section>
+<!-- ====== Banner End ====== -->
+<!-- ====== Login Start ====== -->
+<section class="ud-login">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ud-login-wrapper">
+                    <div class="ud-login-logo">
+                        <img src="~/play/assets/images/logo/logo-2.svg" alt="logo" />
+                    </div>
 
-    <div>
-        <label>Password</label>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
+                    <form class="ud-login-form" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <div class="ud-form-group">
+                            <input asp-for="Email" type="email" placeholder="Email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="ud-form-group">
+                            <input asp-for="Password" type="password" placeholder="*********" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="ud-form-group" style="display:flex; align-items:center; justify-content:space-between;">
+                            <label style="display:flex; align-items:center; gap:8px; margin:0;">
+                                <input asp-for="RememberMe" />
+                                <span>Remember me</span>
+                            </label>
+
+                            <!-- istəyirsənsə sonra əlavə edərik -->
+                            @* <a class="forget-pass" href="#">Forgot password?</a> *@
+                        </div>
+
+                        <div class="ud-form-group">
+                            <button type="submit" class="ud-main-btn w-100">Login</button>
+                        </div>
+                    </form>
+
+                    <p class="signup-option">
+                        Not a member yet? <a href="/Account/Register"> Sign Up </a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <label>
-            <input asp-for="RememberMe" />
-            Remember me
-        </label>
-    </div>
-
-    <button type="submit">Login</button>
-</form>
+</section>
+<!-- ====== Login End ====== -->

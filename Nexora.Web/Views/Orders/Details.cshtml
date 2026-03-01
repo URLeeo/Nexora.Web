@@ -1,5 +1,10 @@
 ﻿@model Nexora.Web.Data.Models.Order
 
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Orders";
+}
+
 <h2>Order @Model.OrderNo</h2>
 
 <p><b>Customer:</b> @(Model.Customer?.FullName ?? "-")</p>
