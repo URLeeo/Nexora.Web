@@ -1,0 +1,143 @@
+﻿@model Nexora.Web.Models.ImportModels.OrdersImportPreviewVm
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Import Preview";
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <div class="fs-4 fw-semibold">Import Preview</div>
+        <div class="text-medium-emphasis">
+            Orders: @Model.OrdersCount • Items: @Model.ItemsCount • Errors: @Model.ErrorsCount
+        </div>
+    </div>
+
+    <a class="btn btn-outline-secondary" asp-controller="Imports" asp-action="Orders">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-arrow-left")" xlink:href="@($"{coreuiIcons}#cil-arrow-left")"></use>
+        </svg>
+        Back
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header fw-semibold d-flex align-items-center justify-content-between">
+        <div>
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-description")" xlink:href="@($"{coreuiIcons}#cil-description")"></use>
+            </svg>
+            Preview Details
+        </div>
+
+        @if (Model.ErrorsCount == 0)
+        {
+            <span class="badge bg-success">Ready to import</span>
+        }
+        else
+        {
+            <span class="badge bg-danger">Fix errors</span>
+        }
+    </div>
+
+    <div class="card-body">
+
+        @foreach (var o in Model.Orders)
+        {
+            <div class="border rounded p-3 mb-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="fw-semibold">
+                        @o.CustomerFullName
+                        @if (!string.IsNullOrWhiteSpace(o.CustomerPhone))
+                        {
+                            <span class="text-medium-emphasis fw-normal">(@o.CustomerPhone)</span>
+                        }
+                    </div>
+                    <div class="text-nowrap">
+                        <span class="badge bg-light text-dark">Subtotal: @o.Subtotal</span>
+                        <span class="badge bg-light text-dark">Discount: @o.DiscountAmount</span>
+                        <span class="badge bg-light text-dark">Tax: @o.TaxAmount</span>
+                        <span class="badge bg-primary">Total: @o.Total</span>
+                    </div>
+                </div>
+
+                @if (o.Errors.Count > 0)
+                {
+                    <div class="alert alert-danger mt-2 mb-2">
+                        <ul class="mb-0">
+                            @foreach (var e in o.Errors)
+                            {
+                                <li>@e</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <div class="table-responsive mt-2">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-nowrap">Qty</th>
+                                <th class="text-nowrap">Unit</th>
+                                <th class="text-nowrap">Line</th>
+                                <th>Errors</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var it in o.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">@((it.ResolvedProductName ?? it.ProductName) ?? "-")</div>
+                                        <div class="small text-medium-emphasis">
+                                            SKU: @((it.ResolvedProductSku ?? it.ProductSku) ?? "-")
+                                        </div>
+                                    </td>
+                                    <td class="text-nowrap">@it.Quantity</td>
+                                    <td class="text-nowrap">@it.UnitPrice</td>
+                                    <td class="text-nowrap">@it.LineTotal</td>
+                                    <td>
+                                        @if (it.Errors.Count == 0)
+                                        {
+                                            <span class="badge bg-success">OK</span>
+                                        }
+                                        else
+                                        {
+                                            <ul class="mb-0">
+                                                @foreach (var e in it.Errors)
+                                                {
+                                                    <li class="text-danger small">@e</li>
+                                                }
+                                            </ul>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <div class="d-flex gap-2 mt-3">
+            @if (Model.ErrorsCount == 0)
+            {
+                <form method="post" asp-controller="Imports" asp-action="OrdersCommit">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="payloadJson" value="@Model.PayloadJson" />
+                    <button type="submit" class="btn btn-success">
+                        <svg class="icon me-2">
+                            <use href="@($"{coreuiIcons}#cil-check-circle")" xlink:href="@($"{coreuiIcons}#cil-check-circle")"></use>
+                        </svg>
+                        Confirm Import
+                    </button>
+                </form>
+            }
+            else
+            {
+                <button class="btn btn-secondary" disabled>Confirm Import</button>
+            }
+        </div>
+    </div>
+</div>

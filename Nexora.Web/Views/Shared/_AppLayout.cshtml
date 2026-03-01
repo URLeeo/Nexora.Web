@@ -22,8 +22,9 @@
     <!-- Sidebar -->
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
         <div class="sidebar-brand d-none d-md-flex">
-            <a href="/Dashboard" class="sidebar-brand-full text-decoration-none text-white fw-bold" style="font-size:18px;">
-                Nexora
+            <a href="/Dashboard" class="sidebar-brand-full text-decoration-none text-white fw-bold d-flex align-items-center gap-2">
+                <img src="~/play/assets/images/favicon.svg" width="22" height="22" alt="Nexora" />
+                <span style="font-size:18px;">Nexora</span>
             </a>
         </div>
 
@@ -91,6 +92,18 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link" href="/Imports/Orders">
+                    <span class="nav-icon">
+                        <svg class="icon">
+                            <use href="@($"{coreuiIcons}#cil-cloud-upload")"
+                                 xlink:href="@($"{coreuiIcons}#cil-cloud-upload")"></use>
+                        </svg>
+                    </span>
+                    Import Orders
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link" href="/Home">
                     <span class="nav-icon">
                         <svg class="icon">
@@ -145,6 +158,24 @@
         <!-- Main -->
         <div class="body flex-grow-1 px-3">
             <div class="container-lg">
+
+                @* ✅ Global alerts *@
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="fw-semibold">@TempData["Success"]</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="fw-semibold">@TempData["Error"]</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
                 @RenderBody()
             </div>
         </div>

@@ -37,6 +37,7 @@ public class OrdersController : Controller
     public async Task<IActionResult> Create()
     {
         await LoadLookups();
+
         var vm = new OrderCreateVm();
         vm.Items.Add(new OrderCreateItemVm());
         return View(vm);
@@ -48,6 +49,7 @@ public class OrdersController : Controller
     {
         var orgId = User.GetOrganizationId();
 
+        // Keep only valid rows
         vm.Items = vm.Items
             .Where(i => i.ProductId != Guid.Empty && i.Quantity > 0)
             .ToList();
@@ -60,9 +62,12 @@ public class OrdersController : Controller
             await LoadLookups();
             return View(vm);
         }
+
         if (vm.CustomerId.HasValue)
         {
-            var customerOk = await _db.Customers.AnyAsync(x => x.OrganizationId == orgId && x.Id == vm.CustomerId.Value);
+            var customerOk = await _db.Customers
+                .AnyAsync(x => x.OrganizationId == orgId && x.Id == vm.CustomerId.Value);
+
             if (!customerOk)
             {
                 ModelState.AddModelError("", "Invalid customer.");
@@ -71,7 +76,9 @@ public class OrdersController : Controller
             }
         }
 
+        // Validate products
         var productIds = vm.Items.Select(x => x.ProductId).Distinct().ToList();
+
         var products = await _db.Products
             .Where(x => x.OrganizationId == orgId && productIds.Contains(x.Id))
             .ToListAsync();
@@ -83,9 +90,11 @@ public class OrdersController : Controller
             return View(vm);
         }
 
+        // Validate stock availability
         foreach (var item in vm.Items)
         {
             var p = products.First(x => x.Id == item.ProductId);
+
             if (p.StockOnHand < item.Quantity)
             {
                 ModelState.AddModelError("", $"Not enough stock for: {p.Name}. Available: {p.StockOnHand}");
@@ -94,6 +103,7 @@ public class OrdersController : Controller
             }
         }
 
+        // Calculate totals
         var subtotal = 0m;
         foreach (var item in vm.Items)
             subtotal += item.UnitPrice * item.Quantity;
@@ -101,51 +111,66 @@ public class OrdersController : Controller
         var total = subtotal - vm.DiscountAmount + vm.TaxAmount;
         if (total < 0) total = 0;
 
-        var order = new Order
+        await using var tx = await _db.Database.BeginTransactionAsync();
+
+        try
         {
-            OrganizationId = orgId,
-            CustomerId = vm.CustomerId,
-            OrderNo = GenerateOrderNo(),
-            Status = OrderStatus.Paid,
-            Subtotal = subtotal,
-            DiscountAmount = vm.DiscountAmount,
-            TaxAmount = vm.TaxAmount,
-            Total = total
-        };
-
-        _db.Orders.Add(order);
-        await _db.SaveChangesAsync();
-
-        foreach (var item in vm.Items)
-        {
-            var p = products.First(x => x.Id == item.ProductId);
-
-            var lineTotal = item.UnitPrice * item.Quantity;
-
-            _db.OrderItems.Add(new OrderItem
-            {
-                OrderId = order.Id,
-                ProductId = p.Id,
-                Quantity = item.Quantity,
-                UnitPrice = item.UnitPrice,
-                LineTotal = lineTotal
-            });
-
-            p.StockOnHand -= item.Quantity;
-
-            _db.StockMovements.Add(new StockMovement
+            var order = new Order
             {
                 OrganizationId = orgId,
-                ProductId = p.Id,
-                Type = StockMovementType.Sale,
-                QuantityChange = -item.Quantity,
-                RelatedOrderId = order.Id,
-                Note = $"Sale: {order.OrderNo}"
-            });
-        }
+                CustomerId = vm.CustomerId,
+                OrderNo = GenerateOrderNo(),
+                Status = OrderStatus.Paid,
+                Subtotal = subtotal,
+                DiscountAmount = vm.DiscountAmount,
+                TaxAmount = vm.TaxAmount,
+                Total = total
+            };
 
-        await _db.SaveChangesAsync();
-        return RedirectToAction(nameof(Details), new { id = order.Id });
+            _db.Orders.Add(order);
+            await _db.SaveChangesAsync();
+
+            foreach (var item in vm.Items)
+            {
+                var p = products.First(x => x.Id == item.ProductId);
+                var lineTotal = item.UnitPrice * item.Quantity;
+
+                _db.OrderItems.Add(new OrderItem
+                {
+                    OrderId = order.Id,
+                    ProductId = p.Id,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    LineTotal = lineTotal
+                });
+
+                // stock decrease
+                p.StockOnHand -= item.Quantity;
+
+                // stock movement log
+                _db.StockMovements.Add(new StockMovement
+                {
+                    OrganizationId = orgId,
+                    ProductId = p.Id,
+                    Type = StockMovementType.Sale,
+                    QuantityChange = -item.Quantity,
+                    RelatedOrderId = order.Id,
+                    Note = $"Sale: {order.OrderNo}"
+                });
+            }
+
+            await _db.SaveChangesAsync();
+            await tx.CommitAsync();
+
+            TempData["Success"] = $"Order created: {order.OrderNo}";
+            return RedirectToAction(nameof(Details), new { id = order.Id });
+        }
+        catch
+        {
+            // no commit => rollback
+            TempData["Error"] = "Failed to create order. Please try again.";
+            throw;
+        }
     }
 
     public async Task<IActionResult> Details(Guid id)
