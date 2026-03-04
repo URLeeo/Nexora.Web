@@ -1,6 +1,10 @@
 ﻿@{
     Layout = "_LandingLayout";
     ViewData["Title"] = "Nexora | Inventory & Sales SaaS";
+
+var ctaUrl = User?.Identity?.IsAuthenticated == true
+    ? Url.Action("Index", "Dashboard")
+    : Url.Action("Register", "Account");
 }
 
 <!-- ====== Header Start ====== -->
@@ -20,7 +24,7 @@
                     </p>
                     <ul class="ud-hero-buttons">
                         <li>
-                            <a href="/Account/Register" class="ud-main-btn ud-white-btn">
+                            <a href="@ctaUrl" class="ud-main-btn ud-white-btn">
                                 Get Started
                             </a>
                         </li>
@@ -33,11 +37,17 @@
                 </div>
 
                 <div class="ud-hero-brands-wrapper wow fadeInUp" data-wow-delay=".3s">
-                    <img src="~/play/assets/images/hero/brand.svg" alt="brand" />
-                </div>
+  <div class="ud-tech-stack">
+    <span class="ud-tech-pill">C#</span>
+    <span class="ud-tech-pill">.NET</span>
+    <span class="ud-tech-pill">ASP.NET Core MVC</span>
+    <span class="ud-tech-pill">Entity Framework Core</span>
+    <span class="ud-tech-pill">SQL Server</span>
+  </div>
+</div>
 
                 <div class="ud-hero-image wow fadeInUp" data-wow-delay=".25s">
-                    <img src="~/play/assets/images/hero/hero-image.svg" alt="hero-image" />
+                    <img src="~/play/assets/images/hero/hero-image.png" alt="hero-image" />
                     <img src="~/play/assets/images/hero/dotted-shape.svg" alt="shape" class="shape shape-1" />
                     <img src="~/play/assets/images/hero/dotted-shape.svg" alt="shape" class="shape shape-2" />
                 </div>
@@ -68,7 +78,7 @@
                     <div class="ud-feature-content">
                         <h3 class="ud-feature-title">Products & Stock</h3>
                         <p class="ud-feature-desc">Create products, set stock levels and low-stock alerts.</p>
-                        <a href="/Account/Register" class="ud-feature-link">Try it</a>
+                        <a href="@ctaUrl" class="ud-feature-link">Try it</a>
                     </div>
                 </div>
             </div>
@@ -79,7 +89,7 @@
                     <div class="ud-feature-content">
                         <h3 class="ud-feature-title">Customers</h3>
                         <p class="ud-feature-desc">Manage customers and keep contact details.</p>
-                        <a href="/Account/Register" class="ud-feature-link">Try it</a>
+                        <a href="@ctaUrl" class="ud-feature-link">Try it</a>
                     </div>
                 </div>
             </div>
@@ -90,7 +100,7 @@
                     <div class="ud-feature-content">
                         <h3 class="ud-feature-title">Orders</h3>
                         <p class="ud-feature-desc">Create orders and automatically decrease stock.</p>
-                        <a href="/Account/Register" class="ud-feature-link">Try it</a>
+                        <a href="@ctaUrl" class="ud-feature-link">Try it</a>
                     </div>
                 </div>
             </div>
@@ -123,7 +133,7 @@
                     <p>
                         Perfect for small shops, online sellers, and service businesses that sell physical items.
                     </p>
-                    <a href="/Account/Register" class="ud-main-btn">Get Started</a>
+                    <a href="@ctaUrl" class="ud-main-btn">Get Started</a>
                 </div>
             </div>
             <div class="ud-about-image">
@@ -162,7 +172,7 @@
                         </ul>
                     </div>
                     <div class="ud-pricing-footer">
-                        <a href="/Account/Register" class="ud-main-btn ud-border-btn">Start Free</a>
+                        <a href="@ctaUrl" class="ud-main-btn ud-border-btn">Start Free</a>
                     </div>
                 </div>
             </div>
@@ -183,7 +193,7 @@
                         </ul>
                     </div>
                     <div class="ud-pricing-footer">
-                        <a href="/Account/Register" class="ud-main-btn ud-white-btn">Upgrade</a>
+                        <a href="@ctaUrl" class="ud-main-btn ud-white-btn">Upgrade</a>
                     </div>
                 </div>
             </div>
@@ -203,7 +213,7 @@
                         </ul>
                     </div>
                     <div class="ud-pricing-footer">
-                        <a href="/Account/Register" class="ud-main-btn ud-border-btn">Contact Sales</a>
+                        <a href="@ctaUrl" class="ud-main-btn ud-border-btn">Contact Sales</a>
                     </div>
                 </div>
             </div>
@@ -226,7 +236,7 @@
                             <div class="ud-info-icon"><i class="lni lni-envelope"></i></div>
                             <div class="ud-info-meta">
                                 <h5>Email</h5>
-                                <p>support@nexora.app</p>
+                                <p>mammadzadaaslan05@gmail.com</p>
                             </div>
                         </div>
                     </div>
@@ -236,17 +246,35 @@
             <div class="col-xl-4 col-lg-5">
                 <div class="ud-contact-form-wrapper wow fadeInUp" data-wow-delay=".2s">
                     <h3 class="ud-contact-form-title">Request a Demo</h3>
-                    <form class="ud-contact-form">
+                    <form class="ud-contact-form" method="post" asp-controller="Home" asp-action="Contact">
+                            @Html.AntiForgeryToken()
+
+@if (TempData["ContactSuccess"] != null)
+{
+    <div class="ud-alert-success" style="margin-bottom:12px;">
+        @TempData["ContactSuccess"]
+    </div>
+}
+@if (TempData["ContactError"] != null)
+{
+    <div class="ud-alert-error" style="margin-bottom:12px;">
+        @TempData["ContactError"]
+    </div>
+}
                         <div class="ud-form-group">
                             <label>Full Name*</label>
-                            <input type="text" placeholder="Your name" />
+                            <input type="text" name="FullName" placeholder="Your name" required />
                         </div>
                         <div class="ud-form-group">
                             <label>Email*</label>
-                            <input type="email" placeholder="example@mail.com" />
+                            <input type="email" name="Email" placeholder="example@mail.com" required />
+                        </div>
+                        <div class="ud-form-group">
+                            <label>Message*</label>
+                            <textarea name="Message" rows="5" placeholder="Write your message..." required></textarea>
                         </div>
                         <div class="ud-form-group mb-0">
-                            <button type="button" class="ud-main-btn">Send</button>
+                            <button type="submit" class="ud-main-btn">Send</button>
                         </div>
                     </form>
                 </div>
@@ -302,26 +330,21 @@
                 const rawHref = elem.getAttribute("href");
                 if (!rawHref) return;
 
-                // normalize: "/#home" -> "#home"
                 const hashIndex = rawHref.indexOf("#");
                 const hash = hashIndex >= 0 ? rawHref.substring(hashIndex) : null;
 
-                // if it has no hash, let normal navigation happen
                 if (!hash) return;
 
-                // If we're NOT on landing page, go to landing with hash
                 if (window.location.pathname !== "/") {
-                    // allow normal navigation
                     return;
                 }
 
-                // we're on landing page => prevent default and smooth scroll
                 e.preventDefault();
 
                 const target = document.querySelector(hash);
                 if (!target) return;
 
-                const headerOffset = 73; // your navbar height
+                const headerOffset = 73;
                 const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
                 const offsetPosition = elementPosition - headerOffset;
 
@@ -332,7 +355,6 @@
             });
         });
 
-        // section menu active
         function onScroll() {
             const links = document.querySelectorAll(".ud-menu-scroll");
             const scrollPos = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;

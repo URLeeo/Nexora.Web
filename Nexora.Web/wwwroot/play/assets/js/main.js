@@ -4,6 +4,7 @@
   // ======= Sticky
   window.onscroll = function () {
     const ud_header = document.querySelector(".ud-header");
+    if (!ud_header) return;
     const sticky = ud_header.offsetTop;
     const logo = document.querySelector(".navbar-brand img");
 
@@ -13,11 +14,10 @@
       ud_header.classList.remove("sticky");
     }
 
-    // === logo change
-    if (ud_header.classList.contains("sticky")) {
-      logo.src = "assets/images/logo/logo-2.svg";
-    } else {
-      logo.src = "assets/images/logo/logo.svg";
+    // === logo change (Nexora)
+    if (logo) {
+      // keep the same brand mark for both states to avoid disappearing
+      logo.src = "/brand/logo-icon.svg";
     }
 
     // show or hide the back-top-top button

@@ -2611,3 +2611,57 @@ p {
   }
 }
 /*# sourceMappingURL=ud-styles.css.map */
+
+/* Nexora brand tweaks */
+.nexora-brand-text{
+  color:#ffffff !important;
+  font-weight:850;
+  font-size:30px;
+  line-height:1;
+  letter-spacing:0.3px;
+}
+.ud-header.sticky .nexora-brand-text{
+  color:#111827 !important; /* becomes dark when header sticks */
+}
+.navbar-brand img{ vertical-align:middle; }
+
+
+
+/* Tech stack pills */
+.ud-tech-stack{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+}
+.ud-tech-pill{
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.25);
+  color:#ffffff;
+  font-weight:700;
+  font-size:14px;
+  backdrop-filter: blur(6px);
+}
+.ud-header.sticky ~ .ud-hero .ud-tech-pill{
+  /* keep pills readable after sticky changes (hero area unaffected usually) */
+}
+
+/* Contact alerts */
+.ud-alert-success{
+  padding:10px 12px;
+  border-radius:8px;
+  background:rgba(34,197,94,.12);
+  border:1px solid rgba(34,197,94,.35);
+  color:#166534;
+  font-weight:600;
+}
+.ud-alert-error{
+  padding:10px 12px;
+  border-radius:8px;
+  background:rgba(239,68,68,.12);
+  border:1px solid rgba(239,68,68,.35);
+  color:#991b1b;
+  font-weight:600;
+}

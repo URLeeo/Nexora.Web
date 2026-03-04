@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="180" viewBox="0 0 640 180" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="48" y1="30" x2="180" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20D3FF"/>
+      <stop offset="0.55" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#6D5EF9"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="30" y1="150" x2="190" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20D3FF"/>
+      <stop offset="1" stop-color="#6D5EF9"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g transform="translate(16,18)">
+    <path d="M62 138V42h22l48 60V42h22v96h-22l-48-60v60H62z" fill="url(#g1)"/>
+    <g filter="url(#glow)">
+      <ellipse cx="112" cy="90" rx="96" ry="48" transform="rotate(-18 112 90)"
+               stroke="url(#g2)" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="182" cy="60" r="8" fill="#20D3FF"/>
+      <circle cx="42" cy="118" r="8" fill="#6D5EF9"/>
+    </g>
+  </g>
+
+  <text x="230" y="108" font-size="64" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial" font-weight="800" fill="#3056D3">Nexora</text>
+</svg>

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nexora.Web.Data;
 using Nexora.Web.Data.Models;
+using Nexora.Web.Models.EmailModels;
+using Nexora.Web.Services.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,11 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
+
+
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
+
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, AppUserClaimsPrincipalFactory>();
 var app = builder.Build();
