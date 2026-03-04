@@ -59,7 +59,15 @@
                     </svg>
                     Items
                 </div>
-                <span class="badge bg-info">@Model.Items.Count</span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-info" id="itemsCountBadge">@Model.Items.Count</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="addItemBtn">
+                        <svg class="icon me-1">
+                            <use href="@($"{coreuiIcons}#cil-plus")" xlink:href="@($"{coreuiIcons}#cil-plus")"></use>
+                        </svg>
+                        Add item
+                    </button>
+                </div>
             </div>
 
             <div class="table-responsive">
@@ -69,6 +77,7 @@
                             <th style="min-width:320px;">Product</th>
                             <th class="text-nowrap" style="width:140px;">Qty</th>
                             <th class="text-nowrap" style="width:180px;">Unit price</th>
+                            <th style="width:90px;"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -98,15 +107,46 @@
                                            value="@(Model.Items[i].UnitPrice)"
                                            inputmode="decimal" />
                                 </td>
+
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-danger removeItemBtn" title="Remove">
+                                        <svg class="icon">
+                                            <use href="@($"{coreuiIcons}#cil-trash")" xlink:href="@($"{coreuiIcons}#cil-trash")"></use>
+                                        </svg>
+                                    </button>
+                                </td>
                             </tr>
                         }
+                    
+                        <tr id="itemRowTemplate" class="d-none">
+                            <td>
+                                <select class="form-select" name="Items[__i__].ProductId">
+                                    <option value="">-- select --</option>
+                                    @foreach (var p in products)
+                                    {
+                                        <option value="@p.Id" data-price="@p.SalePrice">@p.Name (stock: @p.StockOnHand)</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="Items[__i__].Quantity" value="1" inputmode="numeric" />
+                            </td>
+                            <td>
+                                <input class="form-control" name="Items[__i__].UnitPrice" value="" inputmode="decimal" />
+                            </td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-sm btn-outline-danger removeItemBtn" title="Remove">
+                                    <svg class="icon">
+                                        <use href="@($"{coreuiIcons}#cil-trash")" xlink:href="@($"{coreuiIcons}#cil-trash")"></use>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+
                     </tbody>
                 </table>
             </div>
 
-            <div class="text-medium-emphasis small mt-2">
-                For MVP: use the existing rows. We can add “Add item” button later.
-            </div>
 
             <hr class="my-4" />
 
@@ -136,12 +176,19 @@
         </form>
     </div>
 </div>
+
 @section Scripts {
     <script>
         (function () {
-            const selects = document.querySelectorAll('select[name^="Items["][name$="].ProductId"]');
+            const tbody = document.querySelector('table tbody');
+            const tpl = document.getElementById('itemRowTemplate');
+            const addBtn = document.getElementById('addItemBtn');
+            const badge = document.getElementById('itemsCountBadge');
 
-            selects.forEach(sel => {
+            function wirePriceSelect(row) {
+                const sel = row.querySelector('select[name$="].ProductId"]');
+                if (!sel) return;
+
                 sel.addEventListener('change', () => {
                     const opt = sel.options[sel.selectedIndex];
                     const price = opt?.dataset?.price;
@@ -157,7 +204,65 @@
                         unitInput.value = price;
                     }
                 });
+            }
+
+            function getRows() {
+                return Array.from(tbody.querySelectorAll('tr'))
+                    .filter(r => r.id !== 'itemRowTemplate' && !r.classList.contains('d-none'));
+            }
+
+            function reindexRows() {
+                const rows = getRows();
+
+                rows.forEach((row, i) => {
+                    row.querySelectorAll('select, input').forEach(el => {
+                        const n = el.getAttribute('name');
+                        if (!n) return;
+                        el.setAttribute('name', n.replace(/Items\[\d+\]/g, `Items[${i}]`));
+                    });
+                    wirePriceSelect(row);
+                });
+
+                if (badge) badge.textContent = rows.length.toString();
+            }
+
+            function addRow() {
+                const nextIdx = getRows().length;
+
+                const html = tpl.outerHTML.replaceAll('__i__', nextIdx.toString());
+                const tmp = document.createElement('tbody');
+                tmp.innerHTML = html;
+
+                const newRow = tmp.firstElementChild;
+                newRow.classList.remove('d-none');
+                newRow.removeAttribute('id');
+
+                tbody.appendChild(newRow);
+                reindexRows();
+            }
+
+            function removeRow(btn) {
+                const row = btn.closest('tr');
+                if (!row) return;
+
+                const rows = getRows();
+                if (rows.length <= 1) return; // keep at least 1 row
+
+                row.remove();
+                reindexRows();
+            }
+
+            tbody.addEventListener('click', (e) => {
+                const btn = e.target.closest('.removeItemBtn');
+                if (!btn) return;
+                removeRow(btn);
             });
+
+            addBtn?.addEventListener('click', addRow);
+
+            // wire existing row(s)
+            getRows().forEach(r => wirePriceSelect(r));
+            reindexRows();
         })();
     </script>
 }

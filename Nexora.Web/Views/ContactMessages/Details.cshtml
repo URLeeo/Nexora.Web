@@ -1,0 +1,76 @@
+@model Nexora.Web.Data.Entities.ContactMessage
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Message Details";
+
+    var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <div class="fs-4 fw-semibold">Message</div>
+        <div class="text-medium-emphasis">Submitted from landing contact form</div>
+    </div>
+
+    <a class="btn btn-outline-secondary" asp-action="Index">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-arrow-left")" xlink:href="@($"{coreuiIcons}#cil-arrow-left")"></use>
+        </svg>
+        Back
+    </a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header fw-semibold d-flex align-items-center justify-content-between">
+        <div>
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-envelope-open")" xlink:href="@($"{coreuiIcons}#cil-envelope-open")"></use>
+            </svg>
+            @Model.FullName
+            @if (!Model.IsRead)
+            {
+                <span class="badge bg-primary ms-2">New</span>
+            }
+            else
+            {
+                <span class="badge bg-light text-dark ms-2">Read</span>
+            }
+        </div>
+
+        <form method="post" asp-action="Delete" asp-route-id="@Model.Id" onsubmit="return confirm('Delete this message?');">
+            @Html.AntiForgeryToken()
+            <button class="btn btn-sm btn-outline-danger" type="submit">
+                <svg class="icon me-2">
+                    <use href="@($"{coreuiIcons}#cil-trash")" xlink:href="@($"{coreuiIcons}#cil-trash")"></use>
+                </svg>
+                Delete
+            </button>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="text-medium-emphasis small">Email</div>
+                <div class="fw-semibold">@Model.Email</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-medium-emphasis small">Received</div>
+                <div class="fw-semibold">@Model.CreatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-medium-emphasis small">IP</div>
+                <div class="fw-semibold">@Model.IpAddress</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-medium-emphasis small">User Agent</div>
+                <div class="fw-semibold text-truncate">@Model.UserAgent</div>
+            </div>
+        </div>
+
+        <hr class="my-4" />
+
+        <div class="text-medium-emphasis small mb-2">Message</div>
+        <div class="p-3 rounded border bg-light" style="white-space:pre-wrap;">@Model.Message</div>
+    </div>
+</div>

@@ -20,6 +20,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
     public DbSet<StockMovement> StockMovements => Set<StockMovement>();
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -35,6 +36,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
         b.Entity<Order>().ToTable("Orders");
         b.Entity<OrderItem>().ToTable("OrderItems");
         b.Entity<StockMovement>().ToTable("StockMovements");
+        b.Entity<ContactMessage>().ToTable("ContactMessages");
 
         b.Entity<Organization>().HasQueryFilter(x => !x.IsDeleted);
         b.Entity<SubscriptionPlan>().HasQueryFilter(x => !x.IsDeleted);
@@ -45,6 +47,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
         b.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
         b.Entity<OrderItem>().HasQueryFilter(x => !x.IsDeleted);
         b.Entity<StockMovement>().HasQueryFilter(x => !x.IsDeleted);
+        b.Entity<ContactMessage>().HasQueryFilter(x => !x.IsDeleted);
 
         b.Entity<AppUser>()
             .HasOne(x => x.Organization)

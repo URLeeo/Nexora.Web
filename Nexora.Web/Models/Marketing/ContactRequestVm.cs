@@ -12,4 +12,8 @@ public class ContactRequestVm
 
     [Required, MaxLength(4000)]
     public string Message { get; set; } = string.Empty;
+
+    // Honeypot anti-spam field. Real users will never fill this.
+    [MaxLength(200)]
+    public string? Website { get; set; }
 }
