@@ -21,6 +21,7 @@ public class DashboardController : Controller
     {
         var orgId = User.GetOrganizationId();
         var from = DateTime.UtcNow.AddDays(-30);
+        var from7 = DateTime.UtcNow.Date.AddDays(-6);
 
         var revenue = await _db.Orders
             .Where(x => x.OrganizationId == orgId && x.CreatedAtUtc >= from)
@@ -46,11 +47,38 @@ public class DashboardController : Controller
             })
             .ToListAsync();
 
+        // Sales in the last 7 days (daily)
+        var salesRaw = await _db.Orders
+            .AsNoTracking()
+            .Where(x => x.OrganizationId == orgId && x.CreatedAtUtc >= from7)
+            .GroupBy(x => x.CreatedAtUtc.Date)
+            .Select(g => new
+            {
+                Date = g.Key,
+                Revenue = g.Sum(x => x.Total),
+                Orders = g.Count()
+            })
+            .ToListAsync();
+
+        var sales7 = new List<DailySalesVm>();
+        for (var i = 0; i < 7; i++)
+        {
+            var day = from7.AddDays(i);
+            var row = salesRaw.FirstOrDefault(x => x.Date == day);
+            sales7.Add(new DailySalesVm
+            {
+                DateUtc = day,
+                Revenue = row?.Revenue ?? 0m,
+                OrdersCount = row?.Orders ?? 0
+            });
+        }
+
         var vm = new DashboardVm
         {
             RevenueLast30Days = revenue,
             OrdersLast30Days = ordersCount,
             CustomersCount = customersCount,
+            SalesLast7Days = sales7,
             LowStockProducts = lowStock
         };
 

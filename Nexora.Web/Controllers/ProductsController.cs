@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nexora.Web.Data;
@@ -13,10 +14,12 @@ namespace Nexora.Web.Controllers;
 public class ProductsController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly IWebHostEnvironment _env;
 
-    public ProductsController(AppDbContext db)
+    public ProductsController(AppDbContext db, IWebHostEnvironment env)
     {
         _db = db;
+        _env = env;
     }
 
     public async Task<IActionResult> Index(string? q = null)
@@ -79,6 +82,20 @@ public class ProductsController : Controller
             IsActive = vm.IsActive
         };
 
+        // Optional image upload
+        if (vm.ImageFile != null)
+        {
+            var savedUrl = await SaveProductImageAsync(vm.ImageFile);
+            if (savedUrl == null)
+            {
+                ModelState.AddModelError("", "Invalid image. Please upload a PNG/JPG/WEBP up to 2MB.");
+                await LoadCategories();
+                return View(vm);
+            }
+
+            product.ImageUrl = savedUrl;
+        }
+
         _db.Products.Add(product);
         await _db.SaveChangesAsync();
 
@@ -105,7 +122,8 @@ public class ProductsController : Controller
             CostPrice = product.CostPrice,
             StockOnHand = product.StockOnHand,
             LowStockThreshold = product.LowStockThreshold,
-            IsActive = product.IsActive
+            IsActive = product.IsActive,
+            CurrentImageUrl = product.ImageUrl
         };
 
         await LoadCategories();
@@ -146,6 +164,21 @@ public class ProductsController : Controller
         product.LowStockThreshold = vm.LowStockThreshold;
         product.IsActive = vm.IsActive;
 
+        // Optional image upload (replace)
+        if (vm.ImageFile != null)
+        {
+            var savedUrl = await SaveProductImageAsync(vm.ImageFile);
+            if (savedUrl == null)
+            {
+                ModelState.AddModelError("", "Invalid image. Please upload a PNG/JPG/WEBP up to 2MB.");
+                await LoadCategories();
+                vm.CurrentImageUrl = product.ImageUrl;
+                return View(vm);
+            }
+
+            product.ImageUrl = savedUrl;
+        }
+
         await _db.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
@@ -178,5 +211,27 @@ public class ProductsController : Controller
             .ToListAsync();
 
         ViewBag.Categories = cats;
+    }
+
+    private async Task<string?> SaveProductImageAsync(IFormFile file)
+    {
+        // Basic validation (MVP)
+        const long maxBytes = 2 * 1024 * 1024; // 2MB
+        if (file.Length <= 0 || file.Length > maxBytes) return null;
+
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var allowed = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".png", ".jpg", ".jpeg", ".webp" };
+        if (!allowed.Contains(ext)) return null;
+
+        var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "products");
+        Directory.CreateDirectory(uploadsDir);
+
+        var name = $"{Guid.NewGuid():N}{ext}";
+        var fullPath = Path.Combine(uploadsDir, name);
+
+        await using var fs = new FileStream(fullPath, FileMode.Create);
+        await file.CopyToAsync(fs);
+
+        return $"/uploads/products/{name}";
     }
 }

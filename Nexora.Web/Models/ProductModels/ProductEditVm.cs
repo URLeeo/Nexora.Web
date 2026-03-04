@@ -6,4 +6,6 @@ public class ProductEditVm : ProductCreateVm
 {
     [Required]
     public Guid Id { get; set; }
+
+    public string? CurrentImageUrl { get; set; }
 }

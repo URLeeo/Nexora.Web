@@ -29,7 +29,7 @@
     </div>
 
     <div class="card-body">
-        <form method="post" asp-controller="Products" asp-action="Create">
+        <form method="post" asp-controller="Products" asp-action="Create" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
@@ -37,11 +37,13 @@
                 <div class="col-md-6">
                     <label class="form-label">Name</label>
                     <input class="form-control" asp-for="Name" placeholder="e.g. iPhone 15 Pro" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">SKU</label>
                     <input class="form-control" asp-for="Sku" placeholder="Optional" />
+                    <span asp-validation-for="Sku" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-6">
@@ -53,32 +55,53 @@
                             <option value="@c.Id" selected="@(c.Id == Model.CategoryId)">@c.Name</option>
                         }
                     </select>
+                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label">Sale price</label>
                     <input class="form-control" asp-for="SalePrice" />
+                    <span asp-validation-for="SalePrice" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label">Cost price</label>
                     <input class="form-control" asp-for="CostPrice" />
+                    <span asp-validation-for="CostPrice" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label">Stock on hand</label>
                     <input class="form-control" asp-for="StockOnHand" />
+                    <span asp-validation-for="StockOnHand" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label">Low stock threshold</label>
                     <input class="form-control" asp-for="LowStockThreshold" />
+                    <span asp-validation-for="LowStockThreshold" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-3 d-flex align-items-end">
                     <div class="form-check">
                         <input class="form-check-input" asp-for="IsActive" />
-                        <label class="form-check-label" for="IsActive">Active</label>
+                        <label class="form-check-label" asp-for="IsActive">Active</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Product image (optional)</label>
+                    <input class="form-control" asp-for="ImageFile" type="file" accept="image/*" />
+                    <div class="text-medium-emphasis small mt-1">PNG/JPG/WEBP up to 2MB.</div>
+                    <span asp-validation-for="ImageFile" class="text-danger small"></span>
+
+                    <!-- Preview -->
+                    <div class="mt-2">
+                        <div class="border rounded p-2" style="max-width:260px">
+                            <img id="imgPreview"
+                                 alt="preview"
+                                 style="display:none; max-width:100%; height:auto; border-radius:10px;" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,4 +121,25 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const input = document.querySelector('input[name="ImageFile"]');
+            const img = document.getElementById('imgPreview');
+
+            if (!input || !img) return;
+
+            input.addEventListener('change', function () {
+                const file = input.files && input.files[0];
+                if (!file) {
+                    img.style.display = 'none';
+                    img.removeAttribute('src');
+                    return;
+                }
+
+                const url = URL.createObjectURL(file);
+                img.src = url;
+                img.style.display = 'block';
+            });
+        })();
+    </script>
 }

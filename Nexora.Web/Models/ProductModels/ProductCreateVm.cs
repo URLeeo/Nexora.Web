@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Nexora.Web.Models.ProductModels;
 
@@ -24,6 +25,9 @@ public class ProductCreateVm
 
     [Range(0, 1000000)]
     public int LowStockThreshold { get; set; } = 5;
+
+    // Optional product image
+    public IFormFile? ImageFile { get; set; }
 
     public bool IsActive { get; set; } = true;
 }

@@ -12,12 +12,21 @@
         <div class="text-medium-emphasis">Manage your orders</div>
     </div>
 
-    <a class="btn btn-primary" asp-controller="Orders" asp-action="Create">
-        <svg class="icon me-2">
-            <use href="@($"{coreuiIcons}#cil-plus")" xlink:href="@($"{coreuiIcons}#cil-plus")"></use>
-        </svg>
-        New Order
-    </a>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary" asp-controller="Orders" asp-action="ExportCsv">
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-cloud-download")" xlink:href="@($"{coreuiIcons}#cil-cloud-download")"></use>
+            </svg>
+            Export CSV
+        </a>
+
+        <a class="btn btn-primary" asp-controller="Orders" asp-action="Create">
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-plus")" xlink:href="@($"{coreuiIcons}#cil-plus")"></use>
+            </svg>
+            New Order
+        </a>
+    </div>
 </div>
 
 <div class="card mb-4">

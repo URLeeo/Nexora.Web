@@ -5,6 +5,7 @@ using Nexora.Web.Data;
 using Nexora.Web.Data.Models;
 using Nexora.Web.Extensions;
 using Nexora.Web.Models.OrderModels;
+using System.Text;
 
 namespace Nexora.Web.Controllers;
 
@@ -186,6 +187,46 @@ public class OrdersController : Controller
 
         if (order == null) return NotFound();
         return View(order);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ExportCsv()
+    {
+        var orgId = User.GetOrganizationId();
+
+        var orders = await _db.Orders
+            .AsNoTracking()
+            .Include(x => x.Customer)
+            .Where(x => x.OrganizationId == orgId)
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .Take(500)
+            .ToListAsync();
+
+        var sb = new StringBuilder();
+        sb.AppendLine("OrderNo,Customer,Status,Subtotal,Discount,Tax,Total,CreatedAtUtc");
+
+        static string Csv(string? s)
+        {
+            s ??= "";
+            s = s.Replace("\"", "\"\"");
+            return $"\"{s}\"";
+        }
+
+        foreach (var o in orders)
+        {
+            sb.Append(Csv(o.OrderNo)); sb.Append(',');
+            sb.Append(Csv(o.Customer?.FullName ?? "")); sb.Append(',');
+            sb.Append(Csv(o.Status.ToString())); sb.Append(',');
+            sb.Append(o.Subtotal); sb.Append(',');
+            sb.Append(o.DiscountAmount); sb.Append(',');
+            sb.Append(o.TaxAmount); sb.Append(',');
+            sb.Append(o.Total); sb.Append(',');
+            sb.AppendLine(o.CreatedAtUtc.ToString("O"));
+        }
+
+        var bytes = Encoding.UTF8.GetBytes(sb.ToString());
+        var fileName = $"nexora-orders-{DateTime.UtcNow:yyyyMMdd-HHmm}.csv";
+        return File(bytes, "text/csv", fileName);
     }
 
     private async Task LoadLookups()

@@ -113,3 +113,39 @@
         }
     </div>
 </div>
+
+<div class="card mb-4">
+    <div class="card-header fw-semibold d-flex align-items-center justify-content-between">
+        <div>
+            <svg class="icon me-2">
+                <use href="@($"{coreuiIcons}#cil-chart-line")" xlink:href="@($"{coreuiIcons}#cil-chart-line")"></use>
+            </svg>
+            Sales (Last 7 Days)
+        </div>
+        <span class="badge bg-info">@Model.SalesLast7Days.Sum(x => x.OrdersCount) orders</span>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th class="text-nowrap">Orders</th>
+                        <th class="text-nowrap">Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model.SalesLast7Days)
+                    {
+                        <tr>
+                            <td class="text-nowrap">@d.DateUtc.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                            <td class="text-nowrap">@d.OrdersCount</td>
+                            <td class="text-nowrap">@d.Revenue</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

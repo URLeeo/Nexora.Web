@@ -61,6 +61,7 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th class="text-nowrap">Image</th>
                             <th>Product</th>
                             <th class="text-nowrap">SKU</th>
                             <th>Category</th>
@@ -74,25 +75,49 @@
                         @foreach (var p in Model)
                         {
                             var low = p.StockOnHand <= p.LowStockThreshold;
+
                             <tr>
+                                <td class="text-nowrap">
+                                    @if (!string.IsNullOrWhiteSpace(p.ImageUrl))
+                                    {
+                                        <img src="@p.ImageUrl"
+                                             alt="@p.Name"
+                                             style="width:44px;height:44px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;display:block;" />
+                                    }
+                                    else
+                                    {
+                                        <div style="width:44px;height:44px;border-radius:10px;border:1px dashed #cbd5e1;display:flex;align-items:center;justify-content:center;">
+                                            <svg class="icon text-medium-emphasis">
+                                                <use href="@($"{coreuiIcons}#cil-image")" xlink:href="@($"{coreuiIcons}#cil-image")"></use>
+                                            </svg>
+                                        </div>
+                                    }
+                                </td>
+
                                 <td>
                                     <div class="fw-semibold">@p.Name</div>
                                     <div class="small text-medium-emphasis">ID: @p.Id</div>
                                 </td>
+
                                 <td class="text-nowrap">@(!string.IsNullOrWhiteSpace(p.Sku) ? p.Sku : "-")</td>
+
                                 <td>@(p.Category?.Name ?? "-")</td>
+
                                 <td class="text-nowrap">@p.SalePrice</td>
+
                                 <td class="text-nowrap">
                                     <span class="badge @(low ? "bg-warning" : "bg-success")">
                                         @p.StockOnHand
                                     </span>
                                     <span class="text-medium-emphasis ms-2 small">thr: @p.LowStockThreshold</span>
                                 </td>
+
                                 <td class="text-nowrap">
                                     <span class="badge @(p.IsActive ? "bg-success" : "bg-secondary")">
                                         @(p.IsActive ? "Yes" : "No")
                                     </span>
                                 </td>
+
                                 <td class="text-end">
                                     <div class="btn-group" role="group">
                                         <a class="btn btn-sm btn-outline-primary"
