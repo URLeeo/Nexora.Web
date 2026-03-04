@@ -1,4 +1,6 @@
-﻿@model Nexora.Web.Models.ImportModels.OrdersImportPreviewVm
+﻿@using System
+@using System.Linq
+@model Nexora.Web.Models.ImportModels.OrdersImportPreviewVm
 @{
     Layout = "_AppLayout";
     ViewData["Title"] = "Import Preview";
@@ -82,11 +84,13 @@
                                 <th class="text-nowrap">Unit</th>
                                 <th class="text-nowrap">Line</th>
                                 <th>Errors</th>
+                                <th class="text-end">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var it in o.Items)
                             {
+                                var canEditStock = it.ProductId != Guid.Empty && it.Errors.Any(e => e.Contains("Not enough stock", StringComparison.OrdinalIgnoreCase));
                                 <tr>
                                     <td>
                                         <div class="fw-semibold">@((it.ResolvedProductName ?? it.ProductName) ?? "-")</div>
@@ -110,6 +114,21 @@
                                                     <li class="text-danger small">@e</li>
                                                 }
                                             </ul>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        @if (canEditStock)
+                                        {
+                                            <a class="btn btn-sm btn-outline-warning"
+                                               asp-controller="Products"
+                                               asp-action="Edit"
+                                               asp-route-id="@it.ProductId">
+                                                Edit stock
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-medium-emphasis small">-</span>
                                         }
                                     </td>
                                 </tr>

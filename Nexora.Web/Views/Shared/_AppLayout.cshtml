@@ -3,7 +3,7 @@
     var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-coreui-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,6 +15,16 @@
     <link rel="stylesheet" href="~/admin/assets/vendors/simplebar/css/simplebar.css" />
     <link rel="stylesheet" href="~/admin/assets/css/vendors/simplebar.css" />
     <link rel="stylesheet" href="~/admin/assets/css/style.css" />
+
+    <script>
+        // Persisted light/dark theme (CoreUI)
+        (function () {
+            try {
+                var theme = localStorage.getItem('nexora-theme') || 'light';
+                document.documentElement.setAttribute('data-coreui-theme', theme);
+            } catch (e) {}
+        })();
+    </script>
 
     @RenderSection("Styles", required: false)
 </head>
@@ -133,7 +143,7 @@
     </div>
 
     <!-- Wrapper -->
-    <div class="wrapper d-flex flex-column min-vh-100 bg-light">
+    <div class="wrapper d-flex flex-column min-vh-100 bg-body">
         <!-- Header -->
         <header class="header header-sticky mb-4">
             <div class="container-fluid">
@@ -147,6 +157,13 @@
                 </button>
 
                 <ul class="header-nav ms-auto">
+                    <li class="nav-item me-2">
+                        <button id="themeToggle" type="button" class="btn btn-sm btn-outline-secondary" title="Toggle theme">
+                            <svg class="icon">
+                                <use href="@($"{coreuiIcons}#cil-moon")" xlink:href="@($"{coreuiIcons}#cil-moon")"></use>
+                            </svg>
+                        </button>
+                    </li>
                     <li class="nav-item me-2">
                         <a class="nav-link" href="/" title="Back to landing">
                             <svg class="icon">
@@ -203,6 +220,37 @@
     <script src="~/admin/assets/vendors/@@coreui/coreui/js/coreui.bundle.min.js"></script>
     <script src="~/admin/assets/vendors/simplebar/js/simplebar.min.js"></script>
     <script src="~/admin/assets/js/main.js"></script>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('themeToggle');
+            if (!btn) return;
+
+            function currentTheme() {
+                return document.documentElement.getAttribute('data-coreui-theme') || 'light';
+            }
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-coreui-theme', theme);
+                try { localStorage.setItem('nexora-theme', theme); } catch (e) {}
+
+                // swap icon
+                var use = btn.querySelector('use');
+                if (!use) return;
+                var icon = theme === 'dark' ? 'cil-sun' : 'cil-moon';
+                use.setAttribute('href', '@(coreuiIcons)#' + icon);
+                use.setAttribute('xlink:href', '@(coreuiIcons)#' + icon);
+            }
+
+            // init icon
+            setTheme(currentTheme());
+
+            btn.addEventListener('click', function () {
+                var next = currentTheme() === 'dark' ? 'light' : 'dark';
+                setTheme(next);
+            });
+        })();
+    </script>
 
     @RenderSection("Scripts", required: false)
 </body>
