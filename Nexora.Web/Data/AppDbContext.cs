@@ -114,6 +114,16 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
             .WithMany()
             .HasForeignKey(x => x.RelatedOrderId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // Contact messages are scoped to an organization (optional for anonymous landing-page messages)
+        b.Entity<ContactMessage>()
+            .HasOne(x => x.Organization)
+            .WithMany()
+            .HasForeignKey(x => x.OrganizationId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        b.Entity<ContactMessage>()
+            .HasIndex(x => x.OrganizationId);
     }
 
     public override int SaveChanges()

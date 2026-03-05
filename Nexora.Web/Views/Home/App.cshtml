@@ -1,0 +1,70 @@
+@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "App Preview";
+}
+
+@await Html.PartialAsync("_LandingNavbar")
+
+<section class="ud-page-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ud-banner-content">
+                    <h1>App Preview</h1>
+                    <p style="max-width: 760px; margin: 10px auto 0; color: rgba(255,255,255,.85);">
+                        Explore what you can do in Nexora. To create products, import orders, or manage stock, you’ll be asked to sign in.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ud-about" style="padding-top: 60px;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="ud-single-feature" style="height:100%;">
+                    <div class="ud-feature-content">
+                        <h3 class="ud-feature-title">Products</h3>
+                        <p class="ud-feature-desc">Create and manage products with stock and low-stock threshold.</p>
+                        <a class="ud-main-btn" href="/Products">Open Products</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="ud-single-feature" style="height:100%;">
+                    <div class="ud-feature-content">
+                        <h3 class="ud-feature-title">Orders</h3>
+                        <p class="ud-feature-desc">Create orders and automatically decrease stock per order items.</p>
+                        <a class="ud-main-btn" href="/Orders">Open Orders</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="ud-single-feature" style="height:100%;">
+                    <div class="ud-feature-content">
+                        <h3 class="ud-feature-title">Import</h3>
+                        <p class="ud-feature-desc">Upload Excel orders to create multiple orders in one go.</p>
+                        <a class="ud-main-btn" href="/Imports/Orders">Import Orders</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 26px;">
+            <div class="col-lg-12">
+                <div class="ud-single-feature" style="padding: 26px;">
+                    <h3 style="margin:0 0 8px;">Already have an account?</h3>
+                    <p style="margin:0 0 14px;">Sign in to access the full dashboard, messages, and account settings.</p>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <a class="ud-main-btn" href="/Account/Login">Sign In</a>
+                        <a class="ud-main-btn ud-white-btn" href="/Account/Register">Create account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

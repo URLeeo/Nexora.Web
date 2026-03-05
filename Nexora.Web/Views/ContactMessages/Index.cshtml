@@ -1,15 +1,15 @@
-@model List<Nexora.Web.Data.Entities.ContactMessage>
+@model Nexora.Web.Models.App.MessagesInboxVm
 @{
     Layout = "_AppLayout";
-    ViewData["Title"] = "Contact Messages";
+    ViewData["Title"] = "Messages";
 
     var coreuiIcons = Url.Content("~/admin/assets/vendors/@coreui/icons/svg/free.svg");
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
-        <div class="fs-4 fw-semibold">Contact Messages</div>
-        <div class="text-medium-emphasis">Messages submitted from the landing page</div>
+        <div class="fs-4 fw-semibold">Messages</div>
+        <div class="text-medium-emphasis">Inbox + stock alerts</div>
     </div>
 </div>
 
@@ -19,11 +19,15 @@
             <use href="@($"{coreuiIcons}#cil-envelope-closed")" xlink:href="@($"{coreuiIcons}#cil-envelope-closed")"></use>
         </svg>
         Inbox
-        <span class="badge bg-secondary ms-2">@Model.Count</span>
+        <span class="badge bg-secondary ms-2">@Model.ContactMessages.Count</span>
+        @if (Model.UnreadContactCount > 0)
+        {
+            <span class="badge bg-primary ms-2">@Model.UnreadContactCount new</span>
+        }
     </div>
 
     <div class="card-body">
-        @if (Model.Count == 0)
+        @if (Model.ContactMessages.Count == 0)
         {
             <div class="text-medium-emphasis">No messages yet.</div>
         }
@@ -42,7 +46,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach (var m in Model)
+                    @foreach (var m in Model.ContactMessages)
                     {
                         <tr>
                             <td>
@@ -61,6 +65,55 @@
                             <td class="text-nowrap">@m.CreatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
                             <td class="text-end">
                                 <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@m.Id">Open</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header fw-semibold">
+        <svg class="icon me-2">
+            <use href="@($"{coreuiIcons}#cil-warning")" xlink:href="@($"{coreuiIcons}#cil-warning")"></use>
+        </svg>
+        Low stock alerts
+        <span class="badge bg-secondary ms-2">@Model.LowStockProducts.Count</span>
+    </div>
+
+    <div class="card-body">
+        @if (Model.LowStockProducts.Count == 0)
+        {
+            <div class="text-medium-emphasis">All good — no low stock products.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="min-width:220px;">Product</th>
+                            <th style="width:140px;">Stock</th>
+                            <th style="width:170px;">Threshold</th>
+                            <th style="width:140px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var p in Model.LowStockProducts)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@p.Name</td>
+                            <td>
+                                <span class="badge bg-danger">@p.StockOnHand</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark">@p.LowStockThreshold</span>
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary" href="/Products/Edit/@p.Id">Open</a>
                             </td>
                         </tr>
                     }

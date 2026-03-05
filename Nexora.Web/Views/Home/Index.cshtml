@@ -263,14 +263,29 @@ var ctaUrl = User?.Identity?.IsAuthenticated == true
         @TempData["ContactError"]
     </div>
 }
-                        <div class="ud-form-group">
-                            <label>Full Name*</label>
-                            <input type="text" name="FullName" placeholder="Your name" required />
-                        </div>
-                        <div class="ud-form-group">
-                            <label>Email*</label>
-                            <input type="email" name="Email" placeholder="example@mail.com" required />
-                        </div>
+                        @if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="ud-form-group" style="margin-bottom:10px;">
+                                <div style="font-size:14px; color:#6b7280;">
+                                    Sending as <b>@(User.Identity?.Name)</b>
+                                </div>
+                            </div>
+
+                            @* keep fields hidden for model binding; controller will override values from DB *@
+                            <input type="hidden" name="FullName" value="" />
+                            <input type="hidden" name="Email" value="" />
+                        }
+                        else
+                        {
+                            <div class="ud-form-group">
+                                <label>Full Name*</label>
+                                <input type="text" name="FullName" placeholder="Your name" required />
+                            </div>
+                            <div class="ud-form-group">
+                                <label>Email*</label>
+                                <input type="email" name="Email" placeholder="example@gmail.com" required />
+                            </div>
+                        }
                         <div class="ud-form-group">
                             <label>Message*</label>
                             <textarea name="Message" rows="5" placeholder="Write your message..." required></textarea>

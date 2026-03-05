@@ -12,8 +12,8 @@ using Nexora.Web.Data;
 namespace Nexora.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260304082354_addedMessage")]
-    partial class addedMessage
+    [Migration("20260305100709_CreatedLatestDatabase")]
+    partial class CreatedLatestDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,6 +189,9 @@ namespace Nexora.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("ReadAtUtc")
                         .HasColumnType("datetime2");
 
@@ -199,6 +202,8 @@ namespace Nexora.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("ContactMessages", (string)null);
                 });
@@ -724,6 +729,16 @@ namespace Nexora.Web.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Nexora.Web.Data.Entities.ContactMessage", b =>
+                {
+                    b.HasOne("Nexora.Web.Data.Models.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("Nexora.Web.Data.Models.AppUser", b =>

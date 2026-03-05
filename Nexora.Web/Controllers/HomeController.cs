@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Nexora.Web.Data;
 using Nexora.Web.Data.Entities;
+using Nexora.Web.Data.Models;
+using Nexora.Web.Extensions;
 using Nexora.Web.Models.Marketing;
 using Nexora.Web.Services.Email;
 using System.Net;
@@ -15,6 +19,7 @@ public class HomeController : Controller
     private readonly AppDbContext _db;
     private readonly IMemoryCache _cache;
     private readonly ILogger<HomeController> _logger;
+    private readonly UserManager<AppUser> _userManager;
 
     // Rate limit: max 3 messages per 5 minutes per IP
     private const int RateLimitMax = 3;
@@ -25,16 +30,21 @@ public class HomeController : Controller
         IConfiguration configuration,
         AppDbContext db,
         IMemoryCache cache,
-        ILogger<HomeController> logger)
+        ILogger<HomeController> logger,
+        UserManager<AppUser> userManager)
     {
         _emailSender = emailSender;
         _configuration = configuration;
         _db = db;
         _cache = cache;
         _logger = logger;
+        _userManager = userManager;
     }
 
     public IActionResult Index() => View();
+
+    [HttpGet("/app")]
+    public IActionResult App() => View();
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -47,17 +57,28 @@ public class HomeController : Controller
             return Redirect("/#contact");
         }
 
-        if (!ModelState.IsValid)
+        // Validate required fields for anonymous users
+        var isAuthenticated = User?.Identity?.IsAuthenticated == true;
+
+        if (string.IsNullOrWhiteSpace(vm.Message))
         {
-            TempData["ContactError"] = "Please fill in all fields correctly.";
+            TempData["ContactError"] = "Please write a message.";
             return Redirect("/#contact");
         }
 
-        var recipient = _configuration["Contact:RecipientEmail"];
-        if (string.IsNullOrWhiteSpace(recipient))
+        if (!isAuthenticated)
         {
-            TempData["ContactError"] = "Contact is not configured yet.";
-            return Redirect("/#contact");
+            if (string.IsNullOrWhiteSpace(vm.FullName) || string.IsNullOrWhiteSpace(vm.Email))
+            {
+                TempData["ContactError"] = "Please fill in your name and email.";
+                return Redirect("/#contact");
+            }
+
+            if (!TryValidateModel(vm))
+            {
+                TempData["ContactError"] = "Please fill in all fields correctly.";
+                return Redirect("/#contact");
+            }
         }
 
         // Rate limit
@@ -75,10 +96,64 @@ public class HomeController : Controller
         });
 
         // Save to DB (admin panel can read)
+        Guid? orgId = null;
+        AppUser? currentUser = null;
+
+        if (isAuthenticated)
+        {
+            try
+            {
+                orgId = User.GetOrganizationId();
+                var userId = User.GetUserId();
+                currentUser = await _userManager.Users.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+            }
+            catch
+            {
+                // ignore (missing claim)
+            }
+
+            // Force name/email from logged-in account (never trust posted values)
+            vm.FullName = currentUser?.FullName ?? vm.FullName;
+            vm.Email = currentUser?.Email ?? vm.Email;
+        }
+
+        // Recipient routing:
+        // - If authenticated: send to organization Owner email (fallback to support)
+        // - If anonymous: send to support
+        var supportRecipient = _configuration["Contact:SupportEmail"]
+            ?? _configuration["Contact:RecipientEmail"]
+            ?? "";
+
+        if (string.IsNullOrWhiteSpace(supportRecipient))
+        {
+            TempData["ContactError"] = "Contact is not configured yet.";
+            return Redirect("/#contact");
+        }
+
+        var recipient = supportRecipient;
+
+        if (orgId.HasValue)
+        {
+            // Find organization owner email
+            var ownerEmail = await (
+                from u in _db.Users.AsNoTracking()
+                join ur in _db.UserRoles.AsNoTracking() on u.Id equals ur.UserId
+                join r in _db.Roles.AsNoTracking() on ur.RoleId equals r.Id
+                where u.OrganizationId == orgId.Value && r.Name == "Owner"
+                orderby u.CreatedAtUtc
+                select u.Email
+            ).FirstOrDefaultAsync(cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(ownerEmail))
+                recipient = ownerEmail;
+        }
+
         var msg = new ContactMessage
         {
-            FullName = vm.FullName.Trim(),
-            Email = vm.Email.Trim(),
+            OrganizationId = orgId,
+            FullName = (vm.FullName ?? "Anonymous").Trim(),
+            Email = (vm.Email ?? "").Trim(),
             Message = vm.Message.Trim(),
             IpAddress = ip,
             UserAgent = Request.Headers.UserAgent.ToString(),
@@ -89,9 +164,9 @@ public class HomeController : Controller
         await _db.SaveChangesAsync(cancellationToken);
 
         // Email template
-        var subject = $"Nexora Contact — {vm.FullName}";
-        var safeName = WebUtility.HtmlEncode(vm.FullName);
-        var safeEmail = WebUtility.HtmlEncode(vm.Email);
+        var subject = $"Nexora Contact — {(vm.FullName ?? "Anonymous")}";
+        var safeName = WebUtility.HtmlEncode(vm.FullName ?? "Anonymous");
+        var safeEmail = WebUtility.HtmlEncode(vm.Email ?? "");
         var safeMessage = WebUtility.HtmlEncode(vm.Message);
 
         var body = $@"
@@ -103,7 +178,8 @@ public class HomeController : Controller
     </div>
     <div style='padding:22px;'>
       <p style='margin:0 0 10px;'><b>Name:</b> {safeName}</p>
-      <p style='margin:0 0 10px;'><b>Email:</b> {safeEmail}</p>
+      <p style='margin:0 0 10px;'><b>Email:</b> {(string.IsNullOrWhiteSpace(safeEmail) ? "(not provided)" : safeEmail)}</p>
+      <p style='margin:0 0 10px;'><b>Context:</b> {(isAuthenticated ? "Authenticated user" : "Anonymous visitor")}</p>
       <p style='margin:14px 0 8px;'><b>Message:</b></p>
       <div style='white-space:pre-wrap;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;'>
 {safeMessage}

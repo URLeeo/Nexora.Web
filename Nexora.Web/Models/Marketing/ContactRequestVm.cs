@@ -4,11 +4,14 @@ namespace Nexora.Web.Models.Marketing;
 
 public class ContactRequestVm
 {
-    [Required, MaxLength(200)]
-    public string FullName { get; set; } = string.Empty;
+    // NOTE:
+    // - If user is authenticated, FullName/Email are taken from the logged-in account (inputs are hidden in UI).
+    // - If user is anonymous, FullName/Email are required.
+    [MaxLength(200)]
+    public string? FullName { get; set; }
 
-    [Required, EmailAddress, MaxLength(256)]
-    public string Email { get; set; } = string.Empty;
+    [EmailAddress, MaxLength(256)]
+    public string? Email { get; set; }
 
     [Required, MaxLength(4000)]
     public string Message { get; set; } = string.Empty;

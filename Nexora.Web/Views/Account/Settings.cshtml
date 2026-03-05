@@ -1,0 +1,58 @@
+@model Nexora.Web.Models.IdentityModels.AccountSettingsVm
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Account";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <div class="fs-4 fw-semibold">Account</div>
+        <div class="text-medium-emphasis">Profile, company name, and password</div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header fw-semibold">Profile</div>
+    <div class="card-body">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Full name</label>
+                    <input class="form-control" asp-for="FullName" />
+                    <span class="text-danger" asp-validation-for="FullName"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Company name</label>
+                    <input class="form-control" asp-for="CompanyName" />
+                    <span class="text-danger" asp-validation-for="CompanyName"></span>
+                </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="fw-semibold mb-2">Change password (optional)</div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Current password</label>
+                    <input class="form-control" asp-for="CurrentPassword" type="password" autocomplete="current-password" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">New password</label>
+                    <input class="form-control" asp-for="NewPassword" type="password" autocomplete="new-password" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Confirm new password</label>
+                    <input class="form-control" asp-for="ConfirmNewPassword" type="password" autocomplete="new-password" />
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>

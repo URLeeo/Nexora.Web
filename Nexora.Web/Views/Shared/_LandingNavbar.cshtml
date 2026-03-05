@@ -31,7 +31,7 @@
                     <div class="navbar-btn d-none d-sm-inline-block">
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <a href="/Account/Login" class="ud-main-btn ud-login-btn">Open App</a>
+                            <a href="/Dashboard" class="ud-main-btn ud-login-btn">Open App</a>
 
                             <form method="post" action="/Account/Logout" style="display:inline-block; margin-left:8px;">
                                 @Html.AntiForgeryToken()
@@ -42,7 +42,7 @@
                         }
                         else
                         {
-                            <a href="/Dashboard" class="ud-main-btn ud-login-btn">Open App</a>
+                            <a href="/app" class="ud-main-btn ud-login-btn">Open App</a>
                             <a class="ud-main-btn ud-white-btn" href="/Account/Register">Sign Up</a>
                             <a href="/Account/Login" class="ud-main-btn ud-login-btn" style="margin-left:8px;">Sign In</a>
                         }

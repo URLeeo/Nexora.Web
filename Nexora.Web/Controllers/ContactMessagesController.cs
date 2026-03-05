@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nexora.Web.Data;
+using Nexora.Web.Extensions;
+using Nexora.Web.Models.App;
 
 namespace Nexora.Web.Controllers;
 
@@ -18,19 +20,40 @@ public class ContactMessagesController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var items = await _db.ContactMessages
+        var orgId = User.GetOrganizationId();
+
+        var messages = await _db.ContactMessages
             .AsNoTracking()
+            .Where(x => x.OrganizationId == orgId)
             .OrderByDescending(x => x.CreatedAtUtc)
             .Take(200)
             .ToListAsync();
 
-        return View(items);
+        var unreadCount = messages.Count(x => !x.IsRead);
+
+        var lowStock = await _db.Products
+            .AsNoTracking()
+            .Where(p => p.OrganizationId == orgId && p.StockOnHand <= p.LowStockThreshold)
+            .OrderBy(p => p.StockOnHand)
+            .ThenBy(p => p.Name)
+            .Take(200)
+            .ToListAsync();
+
+        var vm = new MessagesInboxVm
+        {
+            ContactMessages = messages,
+            UnreadContactCount = unreadCount,
+            LowStockProducts = lowStock
+        };
+
+        return View(vm);
     }
 
     [HttpGet]
     public async Task<IActionResult> Details(Guid id)
     {
-        var item = await _db.ContactMessages.FirstOrDefaultAsync(x => x.Id == id);
+        var orgId = User.GetOrganizationId();
+        var item = await _db.ContactMessages.FirstOrDefaultAsync(x => x.Id == id && x.OrganizationId == orgId);
         if (item is null) return NotFound();
 
         if (!item.IsRead)
@@ -47,7 +70,8 @@ public class ContactMessagesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var item = await _db.ContactMessages.FirstOrDefaultAsync(x => x.Id == id);
+        var orgId = User.GetOrganizationId();
+        var item = await _db.ContactMessages.FirstOrDefaultAsync(x => x.Id == id && x.OrganizationId == orgId);
         if (item is null) return NotFound();
 
         item.IsDeleted = true;
